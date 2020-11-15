@@ -49,7 +49,7 @@ export default class MinimalTheme extends Plugin {
     else {
       // set the settings-dependent css
       el.innerText = `
-        body.minimal-theme{--text-editor:${this.settings.editorFont};--accent-h:${this.settings.accentHue};--accent-s:${this.settings.accentSat}%;}
+        body.minimal-theme{--font-monospace:${this.settings.monoFont};--text-editor:${this.settings.editorFont};--accent-h:${this.settings.accentHue};--accent-s:${this.settings.accentSat}%;}
       `;
     }
   }
@@ -70,7 +70,8 @@ class MinimalSettings {
   accentSat: number = 17;
   lightStyle: string = 'minimal-light';
   darkStyle: string = 'minimal-dark';
-  editorFont: string = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
+  editorFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
+  monoFont: string = 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace';
   fancyCursor: boolean = true;
 }
 
@@ -159,13 +160,35 @@ class MinimalSettingTab extends PluginSettingTab {
 	    	.setName('Editor font')
 	    	.setDesc('Make sure the font is also installed on your computer')
 	    	.addDropdown(dropdown => dropdown
-	    		.addOption('-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System fonts')
+	    		.addOption('-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System fonts')
 	    		.addOption('iA Writer Mono S','iA Mono')
 	    		.addOption('iA Writer Duo S','iA Duo')
 	    		.addOption('iA Writer Quattro S','iA Quattro')
+	    		.addOption('SFMono-Regular','SF Mono')
+	    		.addOption('Consolas','Consolas')
+	    		.addOption('Roboto Mono','Roboto Mono')
 	    		.setValue(this.plugin.settings.editorFont)
 		        .onChange((value) => {
 		          this.plugin.settings.editorFont = value;
+		          this.plugin.saveData(this.plugin.settings);
+		          this.plugin.refresh();
+		        })
+	        );
+
+	    new Setting(containerEl)
+	    	.setName('Monospace font')
+	    	.setDesc('Used for code blocks, front matter, etc.')
+	    	.addDropdown(dropdown => dropdown
+	    		.addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System fonts')
+	    		.addOption('iA Writer Mono S','iA Mono')
+	    		.addOption('iA Writer Duo S','iA Duo')
+	    		.addOption('iA Writer Quattro S','iA Quattro')
+	    		.addOption('SFMono-Regular','SF Mono')
+	    		.addOption('Consolas','Consolas')
+	    		.addOption('Roboto Mono','Roboto Mono')
+	    		.setValue(this.plugin.settings.monoFont)
+		        .onChange((value) => {
+		          this.plugin.settings.monoFont = value;
 		          this.plugin.saveData(this.plugin.settings);
 		          this.plugin.refresh();
 		        })
