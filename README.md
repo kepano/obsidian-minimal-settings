@@ -16,12 +16,13 @@ This plugin accompanies [Minimal Theme](https://github.com/kepano/obsidian-minim
 
 ## Background colors
 
-Several options are available for light mode and dark mode:
+Several options are available for light mode and dark mode. These options can be toggled via customizable hotkeys.
 
 - **Default** uses a slighty darker background for the sidebar
 - **Low contrast** uses the same background for sidebar and main panel
 - **High contrast (light mode only)** uses dark sidebar and light main panel
+- **True black (dark mode only)** uses pure black sidebar and main panel
 
-## Editor font
+## Editor and monocode font
 - System fonts
 - [iA Writer fonts](https://ia.net/downloads#fonts) (must be downloaded and installed separately)

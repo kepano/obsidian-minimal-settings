@@ -4,16 +4,73 @@ export default class MinimalTheme extends Plugin {
 	settings: MinimalSettings;
 
 	async onload() {
-		// load settings
+
     this.settings = await this.loadData() || new MinimalSettings();
 
-    // add the settings tab
-		this.addSettingTab(new MinimalSettingTab(this.app, this));
-    // add the toggle on/off command
+	this.addSettingTab(new MinimalSettingTab(this.app, this));
 
     this.addStyle();
 
-		this.refresh()
+	this.addCommand({
+      id: 'toggle-minimal-light-default',
+      name: 'Use light mode (default)',
+      callback: () => {
+        this.settings.lightStyle = 'minimal-light';
+        this.saveData(this.settings);
+        this.updateLightStyle();
+      }
+    });
+
+	this.addCommand({
+      id: 'toggle-minimal-light-tonal',
+      name: 'Use light mode (low contrast)',
+      callback: () => {
+        this.settings.lightStyle = 'minimal-light-tonal';
+        this.saveData(this.settings);
+       	this.updateLightStyle();
+      }
+    });
+
+	this.addCommand({
+      id: 'toggle-minimal-light-contrast',
+      name: 'Use light mode (high contrast)',
+      callback: () => {
+        this.settings.lightStyle = 'minimal-light-contrast';
+        this.saveData(this.settings);
+        this.updateLightStyle();
+      }
+    });
+
+	this.addCommand({
+      id: 'toggle-minimal-dark-default',
+      name: 'use dark mode (default)',
+      callback: () => {
+        this.settings.darkStyle = 'minimal-dark';
+        this.saveData(this.settings);
+        this.updateDarkStyle();
+      }
+    });
+
+	this.addCommand({
+      id: 'toggle-minimal-dark-tonal',
+      name: 'Use dark mode (low contrast)',
+      callback: () => {
+        this.settings.darkStyle = 'minimal-dark-tonal';
+        this.saveData(this.settings);
+        this.updateDarkStyle();
+      }
+    });
+
+	this.addCommand({
+      id: 'toggle-minimal-dark-black',
+      name: 'Use dark mode (true black)',
+      callback: () => {
+        this.settings.darkStyle = 'minimal-dark-black';
+        this.saveData(this.settings);
+        this.updateDarkStyle();
+      }
+    });
+	this.refresh()
 	}
 
 	// refresh function for when we change settings
@@ -54,14 +111,32 @@ export default class MinimalTheme extends Plugin {
     }
   }
 
+  updateDarkStyle = () => {
+  	document.body.classList.remove('theme-light');
+    document.body.classList.remove('minimal-dark');
+    document.body.classList.remove('minimal-dark-tonal');
+    document.body.classList.remove('minimal-dark-black');
+    document.body.classList.add('theme-dark');
+    document.body.classList.add(this.settings.darkStyle);
+  }
+
+  updateLightStyle = () => {
+  	document.body.classList.remove('theme-dark');
+    document.body.classList.remove('minimal-light');
+    document.body.classList.remove('minimal-light-tonal');
+    document.body.classList.remove('minimal-light-contrast');
+    document.body.classList.add('theme-light');
+    document.body.classList.add(this.settings.lightStyle);
+  }
+
   removeStyle = () => {
     document.body.classList.remove('minimal-light');
     document.body.classList.remove('minimal-light-tonal');
     document.body.classList.remove('minimal-light-contrast');
     document.body.classList.remove('minimal-dark');
     document.body.classList.remove('minimal-dark-tonal');
+    document.body.classList.remove('minimal-dark-black');
   }
-
 
 }
 
@@ -149,6 +224,7 @@ class MinimalSettingTab extends PluginSettingTab {
 	    	.addDropdown(dropdown => dropdown
 	    		.addOption('minimal-dark','Default')
 	    		.addOption('minimal-dark-tonal','Low contrast')
+	    		.addOption('minimal-dark-black','True black')
 	    		.setValue(this.plugin.settings.darkStyle)
 	        .onChange((value) => {
 	          this.plugin.settings.darkStyle = value;
