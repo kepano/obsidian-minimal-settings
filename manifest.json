@@ -1,7 +1,7 @@
 {
-	"id": "obsidian-minimal-theme",
+	"id": "obsidian-minimal-settings",
 	"name": "Minimal Theme Settings",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "0.9.12",
 	"description": "Settings plugin to control colors and fonts for Minimal Theme.",
 	"author": "@kepano",
