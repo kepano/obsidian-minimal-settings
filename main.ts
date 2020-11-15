@@ -129,12 +129,12 @@ class MinimalSettingTab extends PluginSettingTab {
 	      	);
 
 	    new Setting(containerEl)
-	    	.setName('Light Mode Style')
-	    	.setDesc('Sidebar styles for Light Mode')
+	    	.setName('Light mode background')
+	    	.setDesc('Background colors in light mode')
 	    	.addDropdown(dropdown => dropdown
 	    		.addOption('minimal-light','Default')
-	    		.addOption('minimal-light-tonal','Tonal')
-	    		.addOption('minimal-light-contrast','Contrast')
+	    		.addOption('minimal-light-tonal','Low contrast')
+	    		.addOption('minimal-light-contrast','High contrast')
 	    		.setValue(this.plugin.settings.lightStyle)
         .onChange((value) => {
           this.plugin.settings.lightStyle = value;
@@ -143,11 +143,11 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
 	    new Setting(containerEl)
-	    	.setName('Dark Mode style')
-	    	.setDesc('Sidebar styles for Dark Mode')
+	    	.setName('Dark mode background')
+	    	.setDesc('Background colors in dark mode')
 	    	.addDropdown(dropdown => dropdown
 	    		.addOption('minimal-dark','Default')
-	    		.addOption('minimal-dark-tonal','Tonal')
+	    		.addOption('minimal-dark-tonal','Low contrast')
 	    		.setValue(this.plugin.settings.darkStyle)
 	        .onChange((value) => {
 	          this.plugin.settings.darkStyle = value;
@@ -159,7 +159,7 @@ class MinimalSettingTab extends PluginSettingTab {
 	    	.setName('Editor font')
 	    	.setDesc('Make sure the font is also installed on your computer')
 	    	.addDropdown(dropdown => dropdown
-	    		.addOption('-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','Default')
+	    		.addOption('-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System fonts')
 	    		.addOption('iA Writer Mono S','iA Mono')
 	    		.addOption('iA Writer Duo S','iA Duo')
 	    		.addOption('iA Writer Quattro S','iA Quattro')
