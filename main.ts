@@ -97,8 +97,8 @@ export default class MinimalTheme extends Plugin {
   updateStyle = () => {
   	this.removeStyle();
   	document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
-  	document.body.classList.add(this.settings.lightStyle);
-  	document.body.classList.add(this.settings.darkStyle);
+    document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
+    document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
 
     // get the custom css element
     const el = document.getElementById('minimal-theme');
@@ -106,7 +106,15 @@ export default class MinimalTheme extends Plugin {
     else {
       // set the settings-dependent css
       el.innerText = `
-        body.minimal-theme{--font-monospace:${this.settings.monoFont};--text-editor:${this.settings.editorFont};--accent-h:${this.settings.accentHue};--accent-s:${this.settings.accentSat}%;}
+        body.minimal-theme{
+          --font-normal:${this.settings.textNormal}px;
+          --font-small:${this.settings.textSmall}px;
+          --line-width:${this.settings.lineWidth}rem;
+          --font-monospace:${this.settings.monoFont};
+          --text:${this.settings.textFont};
+          --text-editor:${this.settings.editorFont};
+          --accent-h:${this.settings.accentHue};
+          --accent-s:${this.settings.accentSat}%;}
       `;
     }
   }
@@ -136,6 +144,8 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.remove('minimal-dark');
     document.body.classList.remove('minimal-dark-tonal');
     document.body.classList.remove('minimal-dark-black');
+    document.body.classList.add(this.settings.lightStyle);
+    document.body.classList.add(this.settings.darkStyle);
   }
 
 }
@@ -145,9 +155,15 @@ class MinimalSettings {
   accentSat: number = 17;
   lightStyle: string = 'minimal-light';
   darkStyle: string = 'minimal-dark';
-  editorFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
+  textFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
+  editorFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
   monoFont: string = 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace';
   fancyCursor: boolean = true;
+  lineWidth: number = 40;
+  textNormal: number = 16;
+  textSmall: number = 13;
+  underlineInternal: boolean = true;
+  underlineExternal: boolean = true;
 }
 
 class MinimalSettingTab extends PluginSettingTab {
@@ -215,7 +231,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .onChange((value) => {
           this.plugin.settings.lightStyle = value;
           this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
+          this.plugin.removeStyle();
         }));
 
 	    new Setting(containerEl)
@@ -229,15 +245,36 @@ class MinimalSettingTab extends PluginSettingTab {
 	        .onChange((value) => {
 	          this.plugin.settings.darkStyle = value;
 	          this.plugin.saveData(this.plugin.settings);
-	          this.plugin.refresh();
+	          this.plugin.removeStyle();
 	        }));
+
+      new Setting(containerEl)
+        .setName('Text font')
+        .setDesc('Used in preview mode — the font must also be installed on your computer')
+        .addDropdown(dropdown => dropdown
+          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
+          .addOption('Inter','Inter')
+          .addOption('iA Writer Mono S','iA Mono')
+          .addOption('iA Writer Duo S','iA Duo')
+          .addOption('iA Writer Quattro S','iA Quattro')
+          .addOption('SFMono-Regular','SF Mono')
+          .addOption('Consolas','Consolas')
+          .addOption('Roboto Mono','Roboto Mono')
+          .setValue(this.plugin.settings.textFont)
+            .onChange((value) => {
+              this.plugin.settings.textFont = value;
+              this.plugin.saveData(this.plugin.settings);
+              this.plugin.refresh();
+            })
+          );
 
 	    new Setting(containerEl)
 	    	.setName('Editor font')
-	    	.setDesc('Make sure the font is also installed on your computer')
+	    	.setDesc('Used in edit mode')
 	    	.addDropdown(dropdown => dropdown
-	    		.addOption('-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System fonts')
-	    		.addOption('iA Writer Mono S','iA Mono')
+	    		.addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
+	    		.addOption('Inter','Inter')
+          .addOption('iA Writer Mono S','iA Mono')
 	    		.addOption('iA Writer Duo S','iA Duo')
 	    		.addOption('iA Writer Quattro S','iA Quattro')
 	    		.addOption('SFMono-Regular','SF Mono')
@@ -253,9 +290,9 @@ class MinimalSettingTab extends PluginSettingTab {
 
 	    new Setting(containerEl)
 	    	.setName('Monospace font')
-	    	.setDesc('Used for code blocks, front matter, etc.')
+	    	.setDesc('Used for code blocks, front matter, etc')
 	    	.addDropdown(dropdown => dropdown
-	    		.addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System fonts')
+	    		.addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
 	    		.addOption('iA Writer Mono S','iA Mono')
 	    		.addOption('iA Writer Duo S','iA Duo')
 	    		.addOption('iA Writer Quattro S','iA Quattro')
@@ -269,6 +306,99 @@ class MinimalSettingTab extends PluginSettingTab {
 		          this.plugin.refresh();
 		        })
 	        );
+
+    new Setting(containerEl)
+      .setName('Underline internal links')
+      .setDesc('Show underlines on internal links')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.underlineInternal)
+          .onChange((value) => {
+            this.plugin.settings.underlineInternal = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Underline external links')
+      .setDesc('Show underlines on external links')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.underlineExternal)
+          .onChange((value) => {
+            this.plugin.settings.underlineExternal = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Line width')
+      .setDesc('The maximum number of characters per line (default 40)')
+      .addText(text => text.setPlaceholder('40')
+        .setValue((this.plugin.settings.lineWidth || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.lineWidth = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Body font size')
+      .setDesc('Used for the main text (default 16)')
+      .addText(text => text.setPlaceholder('16')
+        .setValue((this.plugin.settings.textNormal || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.textNormal = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Sidebar font size')
+      .setDesc('Used for text in the sidebars (default 13)')
+      .addText(text => text.setPlaceholder('13')
+        .setValue((this.plugin.settings.textSmall || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.textSmall = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    containerEl.createEl('br');
+    containerEl.createEl('h3');
+    containerEl.createEl('strong', {text: 'Custom fonts'});
+    containerEl.createEl('p', {text: 'These settings override the dropdowns above. Make sure to use the exact name of the font as it appears on your system.'});
+
+    new Setting(containerEl)
+      .setName('Custom text font')
+      .setDesc('Used in preview mode')
+      .addText(text => text.setPlaceholder('')
+        .setValue((this.plugin.settings.textFont || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.textFont = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Custom editor font')
+      .setDesc('Used in edit mode')
+      .addText(text => text.setPlaceholder('')
+        .setValue((this.plugin.settings.editorFont || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.editorFont = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Custom monospace font')
+      .setDesc('Used for code blocks, front matter, etc')
+      .addText(text => text.setPlaceholder('')
+        .setValue((this.plugin.settings.monoFont || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.monoFont = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
 
 	}
 }
