@@ -97,6 +97,7 @@ export default class MinimalTheme extends Plugin {
   updateStyle = () => {
   	this.removeStyle();
   	document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
+    document.body.classList.toggle('focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
 
@@ -120,32 +121,18 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateDarkStyle = () => {
-  	document.body.classList.remove('theme-light');
-    document.body.classList.remove('minimal-dark');
-    document.body.classList.remove('minimal-dark-tonal');
-    document.body.classList.remove('minimal-dark-black');
-    document.body.classList.add('theme-dark');
-    document.body.classList.add(this.settings.darkStyle);
+  	document.body.removeClass('theme-light','minimal-dark','minimal-dark-tonal','minimal-dark-black');
+    document.body.addClass('theme-dark',this.settings.darkStyle);
   }
 
   updateLightStyle = () => {
-  	document.body.classList.remove('theme-dark');
-    document.body.classList.remove('minimal-light');
-    document.body.classList.remove('minimal-light-tonal');
-    document.body.classList.remove('minimal-light-contrast');
-    document.body.classList.add('theme-light');
-    document.body.classList.add(this.settings.lightStyle);
+  	document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast');
+    document.body.addClass('theme-light',this.settings.lightStyle);
   }
 
   removeStyle = () => {
-    document.body.classList.remove('minimal-light');
-    document.body.classList.remove('minimal-light-tonal');
-    document.body.classList.remove('minimal-light-contrast');
-    document.body.classList.remove('minimal-dark');
-    document.body.classList.remove('minimal-dark-tonal');
-    document.body.classList.remove('minimal-dark-black');
-    document.body.classList.add(this.settings.lightStyle);
-    document.body.classList.add(this.settings.darkStyle);
+    document.body.removeClass('minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-dark','minimal-dark-tonal','minimal-dark-black');
+    document.body.addClass(this.settings.lightStyle,this.settings.darkStyle);
   }
 
 }
@@ -159,6 +146,7 @@ class MinimalSettings {
   editorFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
   monoFont: string = 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace';
   fancyCursor: boolean = true;
+  focusMode: boolean = true;
   lineWidth: number = 40;
   textNormal: number = 16;
   textSmall: number = 13;
@@ -219,6 +207,17 @@ class MinimalSettingTab extends PluginSettingTab {
 	          this.plugin.refresh();
 	        	})
 	      	);
+
+    new Setting(containerEl)
+      .setName('Focus mode')
+      .setDesc('When sidebars are collapsed hide action buttons (accessible by hovering)')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
+          .onChange((value) => {
+            this.plugin.settings.focusMode = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
 
 	    new Setting(containerEl)
 	    	.setName('Light mode background')
