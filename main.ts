@@ -5,11 +5,11 @@ export default class MinimalTheme extends Plugin {
 
 	async onload() {
 
-    this.settings = await this.loadData() || new MinimalSettings();
+  this.settings = await this.loadData() || new MinimalSettings();
 
 	this.addSettingTab(new MinimalSettingTab(this.app, this));
 
-    this.addStyle();
+  this.addStyle();
 
 	this.addCommand({
       id: 'toggle-minimal-light-default',
@@ -43,7 +43,7 @@ export default class MinimalTheme extends Plugin {
 
 	this.addCommand({
       id: 'toggle-minimal-dark-default',
-      name: 'use dark mode (default)',
+      name: 'Use dark mode (default)',
       callback: () => {
         this.settings.darkStyle = 'minimal-dark';
         this.saveData(this.settings);
@@ -96,6 +96,7 @@ export default class MinimalTheme extends Plugin {
   // update the styles (at the start, or as the result of a settings change)
   updateStyle = () => {
   	this.removeStyle();
+    this.updateBordersStyle();
   	document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
     document.body.classList.toggle('focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
@@ -125,6 +126,11 @@ export default class MinimalTheme extends Plugin {
     document.body.addClass('theme-dark',this.settings.darkStyle);
   }
 
+  updateBordersStyle = () => {
+    document.body.removeClass('borders','borders-low','borders-none');
+    document.body.addClass(this.settings.bordersStyle);
+  }
+
   updateLightStyle = () => {
   	document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast');
     document.body.addClass('theme-light',this.settings.lightStyle);
@@ -145,6 +151,7 @@ class MinimalSettings {
   textFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
   editorFont: string = '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif';
   monoFont: string = 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace';
+  bordersStyle: string = 'borders';
   fancyCursor: boolean = true;
   focusMode: boolean = true;
   lineWidth: number = 40;
@@ -167,8 +174,7 @@ class MinimalSettingTab extends PluginSettingTab {
 		let {containerEl} = this;
 
 		containerEl.empty();
-
-		containerEl.createEl('strong', {text: 'Minimal Theme Settings'});
+		containerEl.createEl('h3', {text: 'Minimal Theme Settings'});
 		containerEl.createEl('p', {text: 'If you notice any issues, update to the latest version of Minimal Theme and reload Obsidian. Download the Hider plugin for additional options to further simplify the Obsidian UI.'});
 		containerEl.createEl('a', {text: '⬤ Accent color'});
 		containerEl.createEl('h3');
@@ -246,6 +252,20 @@ class MinimalSettingTab extends PluginSettingTab {
 	          this.plugin.saveData(this.plugin.settings);
 	          this.plugin.removeStyle();
 	        }));
+
+      new Setting(containerEl)
+        .setName('Sidebar borders')
+        .setDesc('Defines which borders should appear')
+        .addDropdown(dropdown => dropdown
+          .addOption('borders','Default')
+          .addOption('borders-low','Simple')
+          .addOption('borders-none','Hidden')
+          .setValue(this.plugin.settings.bordersStyle)
+          .onChange((value) => {
+            this.plugin.settings.bordersStyle = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.updateBordersStyle();
+          }));
 
       new Setting(containerEl)
         .setName('Text font')
@@ -363,7 +383,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
-    containerEl.createEl('strong', {text: 'Custom fonts'});
+    containerEl.createEl('h3', {text: 'Custom fonts'});
     containerEl.createEl('p', {text: 'These settings override the dropdowns above. Make sure to use the exact name of the font as it appears on your system.'});
 
     new Setting(containerEl)
