@@ -1,29 +1,35 @@
 import { App, Workspace, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 export default class MinimalTheme extends Plugin {
-	settings: MinimalSettings;
+  settings: MinimalSettings;
 
-	async onload() {
+  async onload() {
 
   this.settings = await this.loadData() || new MinimalSettings();
 
-	this.addSettingTab(new MinimalSettingTab(this.app, this));
+  this.addSettingTab(new MinimalSettingTab(this.app, this));
 
   this.addStyle();
 
   // Watch for system changes to color theme 
 
-  window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', event => {
-    if (event.matches && this.settings.useSystemTheme) {
+  let media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  let callback = () => {
+    if (media.matches) {
       console.log('Dark mode active');
       this.updateDarkStyle()
 
-    } else if (this.settings.useSystemTheme) {
+    } else {
       console.log('Light mode active');
       this.updateLightStyle()
     }
-  })
+  }
+  media.addEventListener('change', callback);
+
+  // Remove listener when we unload
+
+  this.register(() => media.removeEventListener('change', callback));
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
@@ -141,7 +147,7 @@ export default class MinimalTheme extends Plugin {
     });
 
 
-	this.refresh()
+  this.refresh()
 
   if (this.settings.useSystemTheme) {
     this.enableSystemTheme();
@@ -149,14 +155,14 @@ export default class MinimalTheme extends Plugin {
 
 }
 
-	// refresh function for when we change settings
-  refresh = () => {
+  // refresh function for when we change settings
+  refresh() {
     // re-load the style
     this.updateStyle()
   }
 
   // add the styling elements we need
-  addStyle = () => {
+  addStyle() {
     // add a css block for our settings-dependent styles
     const css = document.createElement('style');
     css.id = 'minimal-theme';
@@ -170,10 +176,10 @@ export default class MinimalTheme extends Plugin {
   }
 
   // update the styles (at the start, or as the result of a settings change)
-  updateStyle = () => {
-  	this.removeStyle();
+  updateStyle() {
+    this.removeStyle();
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
-  	document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
+    document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
     document.body.classList.toggle('focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
@@ -198,11 +204,11 @@ export default class MinimalTheme extends Plugin {
     }
   }
 
-  enableSystemTheme = () => {
+  enableSystemTheme() {
     (this.app.workspace as any).layoutReady ? this.refreshSystemTheme() : this.app.workspace.on('layout-ready', this.refreshSystemTheme);
   }
 
-  refreshSystemTheme = () => {
+  refreshSystemTheme() {
     const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
     if(isDarkMode && this.settings.useSystemTheme){
@@ -215,25 +221,25 @@ export default class MinimalTheme extends Plugin {
       }
   }
 
-  updateDarkStyle = () => {
-  	document.body.removeClass('theme-light','minimal-dark','minimal-dark-tonal','minimal-dark-black');
+  updateDarkStyle() {
+    document.body.removeClass('theme-light','minimal-dark','minimal-dark-tonal','minimal-dark-black');
     document.body.addClass('theme-dark',this.settings.darkStyle);
     this.app.workspace.trigger('css-change');
   }
 
-  updateLightStyle = () => {
-  	document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white');
+  updateLightStyle() {
+    document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white');
     document.body.addClass('theme-light',this.settings.lightStyle);
     this.app.workspace.trigger('css-change');
   }
 
-  updateTheme = () => {
+  updateTheme() {
     document.body.removeClass('theme-dark','theme-light');
     document.body.addClass(this.settings.theme);
     this.app.workspace.trigger('css-change');
   }
 
-  removeStyle = () => {
+  removeStyle() {
     document.body.removeClass('minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white','minimal-dark','minimal-dark-tonal','minimal-dark-black');
     document.body.addClass(this.settings.lightStyle,this.settings.darkStyle);
   }
@@ -263,56 +269,56 @@ class MinimalSettings {
 class MinimalSettingTab extends PluginSettingTab {
 
 
-	plugin: MinimalTheme;
+  plugin: MinimalTheme;
   constructor(app: App, plugin: MinimalTheme) {
     super(app, plugin);
     this.plugin = plugin;
-	}
+  }
 
-	display(): void {
-		let {containerEl} = this;
+  display(): void {
+    let {containerEl} = this;
 
-		containerEl.empty();
-		containerEl.createEl('h3', {text: 'Minimal Theme Settings'});
-		containerEl.createEl('p', {text: 'If you notice any issues, update to the latest version of Minimal Theme and reload Obsidian. Download the Hider plugin for additional options to further simplify the Obsidian UI.'});
-		containerEl.createEl('a', {text: '⬤ Accent color'});
-		containerEl.createEl('h3');
+    containerEl.empty();
+    containerEl.createEl('h3', {text: 'Minimal Theme Settings'});
+    containerEl.createEl('p', {text: 'If you notice any issues, update to the latest version of Minimal Theme and reload Obsidian. Download the Hider plugin for additional options to further simplify the Obsidian UI.'});
+    containerEl.createEl('a', {text: '⬤ Accent color'});
+    containerEl.createEl('h3');
 
 
-			new Setting(containerEl)
-				.setName('Accent color hue')
-	      .setDesc('For links and interactive elements')
-		    .addSlider(slider => slider
-		        .setLimits(0, 360, 1)
-		        .setValue(this.plugin.settings.accentHue)
-	        .onChange((value) => {
-	          this.plugin.settings.accentHue = value;
-	          this.plugin.saveData(this.plugin.settings);
-	          this.plugin.refresh();
-	        }));
+      new Setting(containerEl)
+        .setName('Accent color hue')
+        .setDesc('For links and interactive elements')
+        .addSlider(slider => slider
+            .setLimits(0, 360, 1)
+            .setValue(this.plugin.settings.accentHue)
+          .onChange((value) => {
+            this.plugin.settings.accentHue = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
 
-			new Setting(containerEl)
-				.setName('Accent color saturation')
-	      .setDesc('For links and interactive elements')
-		    .addSlider(slider => slider
-		        .setLimits(0, 100, 1)
-		        .setValue(this.plugin.settings.accentSat)
-	        .onChange((value) => {
-	          this.plugin.settings.accentSat = value;
-	          this.plugin.saveData(this.plugin.settings);
-	          this.plugin.refresh();
-	        }));
+      new Setting(containerEl)
+        .setName('Accent color saturation')
+        .setDesc('For links and interactive elements')
+        .addSlider(slider => slider
+            .setLimits(0, 100, 1)
+            .setValue(this.plugin.settings.accentSat)
+          .onChange((value) => {
+            this.plugin.settings.accentSat = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
 
     new Setting(containerEl)
-    	.setName('Fancy cursor')
-    	.setDesc('The editor cursor takes on your accent color')
-    	.addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
-	        .onChange((value) => {
-	          this.plugin.settings.fancyCursor = value;
-	          this.plugin.saveData(this.plugin.settings);
-	          this.plugin.refresh();
-	        	})
-	      	);
+      .setName('Fancy cursor')
+      .setDesc('The editor cursor takes on your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
+          .onChange((value) => {
+            this.plugin.settings.fancyCursor = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
 
     new Setting(containerEl)
       .setName('Use system-level setting for light or dark mode')
@@ -325,34 +331,34 @@ class MinimalSettingTab extends PluginSettingTab {
             })
           );
 
-	    new Setting(containerEl)
-	    	.setName('Light mode style')
-	    	.setDesc('Background colors in light mode')
-	    	.addDropdown(dropdown => dropdown
-	    		.addOption('minimal-light','Default')
+      new Setting(containerEl)
+        .setName('Light mode style')
+        .setDesc('Background colors in light mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('minimal-light','Default')
           .addOption('minimal-light-white','All white')
-	    		.addOption('minimal-light-tonal','Low contrast')
-	    		.addOption('minimal-light-contrast','High contrast')
-	    		.setValue(this.plugin.settings.lightStyle)
+          .addOption('minimal-light-tonal','Low contrast')
+          .addOption('minimal-light-contrast','High contrast')
+          .setValue(this.plugin.settings.lightStyle)
         .onChange((value) => {
           this.plugin.settings.lightStyle = value;
           this.plugin.saveData(this.plugin.settings);
           this.plugin.removeStyle();
         }));
 
-	    new Setting(containerEl)
-	    	.setName('Dark mode style')
-	    	.setDesc('Background colors in dark mode')
-	    	.addDropdown(dropdown => dropdown
-	    		.addOption('minimal-dark','Default')
-	    		.addOption('minimal-dark-tonal','Low contrast')
-	    		.addOption('minimal-dark-black','True black')
-	    		.setValue(this.plugin.settings.darkStyle)
-	        .onChange((value) => {
-	          this.plugin.settings.darkStyle = value;
-	          this.plugin.saveData(this.plugin.settings);
-	          this.plugin.removeStyle();
-	        }));
+      new Setting(containerEl)
+        .setName('Dark mode style')
+        .setDesc('Background colors in dark mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('minimal-dark','Default')
+          .addOption('minimal-dark-tonal','Low contrast')
+          .addOption('minimal-dark-black','True black')
+          .setValue(this.plugin.settings.darkStyle)
+          .onChange((value) => {
+            this.plugin.settings.darkStyle = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.removeStyle();
+          }));
 
       new Setting(containerEl)
         .setName('Toggle sidebar borders')
@@ -395,44 +401,44 @@ class MinimalSettingTab extends PluginSettingTab {
             })
           );
 
-	    new Setting(containerEl)
-	    	.setName('Editor font')
-	    	.setDesc('Used in edit mode')
-	    	.addDropdown(dropdown => dropdown
-	    		.addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-	    		.addOption('Inter','Inter')
+      new Setting(containerEl)
+        .setName('Editor font')
+        .setDesc('Used in edit mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
+          .addOption('Inter','Inter')
           .addOption('iA Writer Mono S','iA Mono')
-	    		.addOption('iA Writer Duo S','iA Duo')
-	    		.addOption('iA Writer Quattro S','iA Quattro')
-	    		.addOption('SFMono-Regular','SF Mono')
-	    		.addOption('Consolas','Consolas')
-	    		.addOption('Roboto Mono','Roboto Mono')
-	    		.setValue(this.plugin.settings.editorFont)
-		        .onChange((value) => {
-		          this.plugin.settings.editorFont = value;
-		          this.plugin.saveData(this.plugin.settings);
-		          this.plugin.refresh();
-		        })
-	        );
+          .addOption('iA Writer Duo S','iA Duo')
+          .addOption('iA Writer Quattro S','iA Quattro')
+          .addOption('SFMono-Regular','SF Mono')
+          .addOption('Consolas','Consolas')
+          .addOption('Roboto Mono','Roboto Mono')
+          .setValue(this.plugin.settings.editorFont)
+            .onChange((value) => {
+              this.plugin.settings.editorFont = value;
+              this.plugin.saveData(this.plugin.settings);
+              this.plugin.refresh();
+            })
+          );
 
-	    new Setting(containerEl)
-	    	.setName('Monospace font')
-	    	.setDesc('Used for code blocks, front matter, etc')
-	    	.addDropdown(dropdown => dropdown
-	    		.addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
-	    		.addOption('iA Writer Mono S','iA Mono')
-	    		.addOption('iA Writer Duo S','iA Duo')
-	    		.addOption('iA Writer Quattro S','iA Quattro')
-	    		.addOption('SFMono-Regular','SF Mono')
-	    		.addOption('Consolas','Consolas')
-	    		.addOption('Roboto Mono','Roboto Mono')
-	    		.setValue(this.plugin.settings.monoFont)
-		        .onChange((value) => {
-		          this.plugin.settings.monoFont = value;
-		          this.plugin.saveData(this.plugin.settings);
-		          this.plugin.refresh();
-		        })
-	        );
+      new Setting(containerEl)
+        .setName('Monospace font')
+        .setDesc('Used for code blocks, front matter, etc')
+        .addDropdown(dropdown => dropdown
+          .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
+          .addOption('iA Writer Mono S','iA Mono')
+          .addOption('iA Writer Duo S','iA Duo')
+          .addOption('iA Writer Quattro S','iA Quattro')
+          .addOption('SFMono-Regular','SF Mono')
+          .addOption('Consolas','Consolas')
+          .addOption('Roboto Mono','Roboto Mono')
+          .setValue(this.plugin.settings.monoFont)
+            .onChange((value) => {
+              this.plugin.settings.monoFont = value;
+              this.plugin.saveData(this.plugin.settings);
+              this.plugin.refresh();
+            })
+          );
 
     new Setting(containerEl)
       .setName('Underline internal links')
@@ -527,5 +533,5 @@ class MinimalSettingTab extends PluginSettingTab {
           this.plugin.refresh();
         }));
 
-	}
+  }
 }
