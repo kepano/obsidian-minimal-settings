@@ -184,6 +184,9 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
     document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
+    document.body.classList.toggle('minimal-folding', this.settings.folding);
+    document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
+    document.body.classList.toggle('minimal-rel-preview', this.settings.relationLinesPreview);
 
     // get the custom css element
     const el = document.getElementById('minimal-theme');
@@ -211,7 +214,7 @@ export default class MinimalTheme extends Plugin {
   refreshSystemTheme() {
     const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
-    if(isDarkMode && this.settings.useSystemTheme){
+    if (isDarkMode && this.settings.useSystemTheme) {
         console.log('Dark mode active');
         this.updateDarkStyle()
 
@@ -264,6 +267,9 @@ class MinimalSettings {
   underlineInternal: boolean = true;
   underlineExternal: boolean = true;
   useSystemTheme: boolean = false;
+  folding: boolean = false;
+  relationLinesPreview: boolean = false;
+  relationLinesEdit: boolean = false;
 }
 
 class MinimalSettingTab extends PluginSettingTab {
@@ -361,8 +367,8 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
       new Setting(containerEl)
-        .setName('Toggle sidebar borders')
-        .setDesc('Hide or show sidebar borders')
+        .setName('Sidebar borders')
+        .setDesc('Turn off for a more minimal experience')
         .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersToggle)
           .onChange((value) => {
             this.plugin.settings.bordersToggle = value;
@@ -494,6 +500,36 @@ class MinimalSettingTab extends PluginSettingTab {
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
+
+    new Setting(containerEl)
+      .setName('Folding Editor offset')
+      .setDesc('Turn this on if you use folding headings and indents')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.folding)
+          .onChange((value) => {
+            this.plugin.settings.folding = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Relationship lines in Preview')
+      .setDesc('Show vertical lines that connect related bullet points and task lists')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.relationLinesPreview)
+          .onChange((value) => {
+            this.plugin.settings.relationLinesPreview = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Relationship lines in Editor')
+      .setDesc('Show vertical lines that connect related bullet points and task lists')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.relationLinesEdit)
+          .onChange((value) => {
+            this.plugin.settings.relationLinesEdit = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
