@@ -1,6 +1,8 @@
-# Minimal Theme Settings
+# Overview
 
 This plugin accompanies [Minimal Theme](https://github.com/kepano/obsidian-minimal), allowing you to customize the theme from the Obsidian Settings panel. This plugin is not required to use Minimal Theme, but highly recommended.
+
+Support the development of my plugins and themes **@kepano** on [Twitter](https://www.twitter.com/kepano), [Patreon](https://www.patreon.com/kepano) or [Buy me a coffee](https://www.buymeacoffee.com/kepano).
 
 # Usage
 
