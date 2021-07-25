@@ -576,7 +576,7 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
-      .setName('Normal width')
+      .setName('Normal line width')
       .setDesc('Number of characters per line (default 40)')
       .addText(text => text.setPlaceholder('40')
         .setValue((this.plugin.settings.lineWidth || '') + '')
