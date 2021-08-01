@@ -35,7 +35,7 @@ export default class MinimalTheme extends Plugin {
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
-  const theme = ['theme-light', 'theme-dark'];
+  const theme = ['moonstone', 'obsidian'];
 
   this.addCommand({
       id: 'toggle-minimal-dark-cycle',
@@ -154,7 +154,7 @@ export default class MinimalTheme extends Plugin {
 }
 
   onunload() {
-    console.log('Unloading Advanced Appearance plugin');
+    console.log('Unloading Minimal Theme Settings plugin');
   }
 
   async loadSettings() {
@@ -235,19 +235,29 @@ export default class MinimalTheme extends Plugin {
 
   updateDarkStyle() {
     document.body.removeClass('theme-light','minimal-dark','minimal-dark-tonal','minimal-dark-black');
-    document.body.addClass('theme-dark',this.settings.darkStyle);
+    document.body.addClass(this.settings.darkStyle);
+    // @ts-ignore
+    this.app.setTheme('obsidian');
+    // @ts-ignore
+    this.app.vault.setConfig('theme', 'obsidian');
     this.app.workspace.trigger('css-change');
   }
 
   updateLightStyle() {
     document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white');
-    document.body.addClass('theme-light',this.settings.lightStyle);
+    document.body.addClass(this.settings.lightStyle);
+    // @ts-ignore
+    this.app.setTheme('moonstone');
+    // @ts-ignore
+    this.app.vault.setConfig('theme', 'moonstone');
     this.app.workspace.trigger('css-change');
   }
 
   updateTheme() {
-    document.body.removeClass('theme-dark','theme-light');
-    document.body.addClass(this.settings.theme);
+    // @ts-ignore
+    this.app.setTheme(this.settings.theme);
+    // @ts-ignore
+    this.app.vault.setConfig('theme', this.settings.theme);
     this.app.workspace.trigger('css-change');
   }
 
@@ -285,7 +295,7 @@ interface MinimalSettings {
 }
 
 const DEFAULT_SETTINGS: MinimalSettings = {
-  theme: 'theme-light',
+  theme: 'moonstone',
   accentHue: 201,
   accentSat: 17,
   lightStyle: 'minimal-light',
