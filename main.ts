@@ -388,7 +388,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Fancy cursor')
-      .setDesc('The editor cursor takes on your accent color')
+      .setDesc('The editor cursor uses your accent color')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
           .onChange((value) => {
             this.plugin.settings.fancyCursor = value;
@@ -399,7 +399,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Match system setting for light or dark mode')
-      .setDesc('Automatically switch based on your operating system settings')
+      .setDesc('Automatically switch based on your OS setting')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.useSystemTheme)
           .onChange((value) => {
             this.plugin.settings.useSystemTheme = value;
@@ -420,7 +420,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Hide action buttons in focus mode')
-      .setDesc('When sidebars are collapsed hide action buttons (accessible by hovering)')
+      .setDesc('When sidebars are collapsed, hide action buttons (hover to reveal them)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
@@ -431,7 +431,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Trim file names in sidebars')
-      .setDesc('Use ellipses to fits file names on a single line')
+      .setDesc('Use ellipses to fit file names on a single line')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.trimNames)
           .onChange((value) => {
             this.plugin.settings.trimNames = value;
@@ -499,10 +499,11 @@ class MinimalSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Text font')
-        .setDesc('Used in preview mode — the font must also be installed on your computer')
+        .setDesc('Used in preview mode — the font must also be installed on your system')
         .addDropdown(dropdown => dropdown
           .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
           .addOption('Inter','Inter')
+          .addOption('Avenir','Avenir')
           .addOption('iA Writer Mono S','iA Mono')
           .addOption('iA Writer Duo S','iA Duo')
           .addOption('iA Writer Quattro S','iA Quattro')
@@ -523,6 +524,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .addDropdown(dropdown => dropdown
           .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
           .addOption('Inter','Inter')
+          .addOption('Avenir','Avenir')
           .addOption('iA Writer Mono S','iA Mono')
           .addOption('iA Writer Duo S','iA Duo')
           .addOption('iA Writer Quattro S','iA Quattro')
@@ -539,7 +541,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Monospace font')
-        .setDesc('Used for code blocks, front matter, etc')
+        .setDesc('Used for code blocks and front matter')
         .addDropdown(dropdown => dropdown
           .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
           .addOption('iA Writer Mono S','iA Mono')
@@ -561,6 +563,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .setDesc('Used for the user interface such as menus and sidebar')
         .addDropdown(dropdown => dropdown
           .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
+          .addOption('Avenir','Avenir')
           .addOption('iA Writer Mono S','iA Mono')
           .addOption('iA Writer Duo S','iA Duo')
           .addOption('iA Writer Quattro S','iA Quattro')
@@ -677,7 +680,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     const donateText = document.createElement('p');
     donateText.appendText(
-      'If you enjoy Minimal Theme consider supporting its development using the links below:',
+      'If you enjoy Minimal Theme, consider supporting its development using the links below:',
     );
     div.appendChild(donateText);
 
