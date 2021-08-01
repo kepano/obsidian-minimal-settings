@@ -148,7 +148,6 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-
   this.refresh()
 
 }
@@ -194,6 +193,7 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
     document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
+    document.body.classList.toggle('full-width-media', this.settings.fullWidthMedia);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
@@ -284,6 +284,7 @@ interface MinimalSettings {
   focusMode: boolean;
   lineWidth: number;
   maxWidth: number;
+  fullWidthMedia: boolean,
   textNormal: number;
   textSmall: number;
   underlineInternal: boolean;
@@ -310,6 +311,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   textSmall: 13,
   fancyCursor: true,
   trimNames: true,
+  fullWidthMedia: true,
   bordersToggle: true,
   focusMode: false,
   underlineInternal: true,
@@ -476,6 +478,16 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.relationLinesEdit)
           .onChange((value) => {
             this.plugin.settings.relationLinesEdit = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Maximize media')
+      .setDesc('Images and videos fill the width of the line')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.fullWidthMedia)
+          .onChange((value) => {
+            this.plugin.settings.fullWidthMedia = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
