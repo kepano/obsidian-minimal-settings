@@ -194,7 +194,9 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
     document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
     document.body.classList.toggle('full-width-media', this.settings.fullWidthMedia);
+    document.body.classList.toggle('minimal-status-off', !this.settings.minimalStatus);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
+    document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
     document.body.classList.toggle('minimal-rel-preview', this.settings.relationLinesPreview);
@@ -279,12 +281,14 @@ interface MinimalSettings {
   editorFont: string;
   monoFont: string;
   fancyCursor: boolean;
+  minimalIcons: boolean;
   trimNames: boolean;
   bordersToggle: boolean;
   focusMode: boolean;
   lineWidth: number;
   maxWidth: number;
   fullWidthMedia: boolean,
+  minimalStatus: boolean,
   textNormal: number;
   textSmall: number;
   underlineInternal: boolean;
@@ -309,10 +313,12 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   maxWidth: 88,
   textNormal: 16,
   textSmall: 13,
+  minimalIcons: true,
   fancyCursor: true,
   trimNames: true,
   fullWidthMedia: true,
   bordersToggle: true,
+  minimalStatus: true,
   focusMode: false,
   underlineInternal: true,
   underlineExternal: true,
@@ -399,6 +405,17 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('h3', {text: 'Features'});
 
     new Setting(containerEl)
+      .setName('Custom icons')
+      .setDesc('Replace default icons with Minimal set')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
+          .onChange((value) => {
+            this.plugin.settings.minimalIcons = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
       .setName('Fancy cursor')
       .setDesc('The editor cursor uses your accent color')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
@@ -408,6 +425,16 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
             })
           );
+
+    new Setting(containerEl)
+      .setName('Minimal status bar')
+      .setDesc('Use narrow status bar')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalStatus)
+          .onChange((value) => {
+            this.plugin.settings.minimalStatus = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
 
     new Setting(containerEl)
       .setName('Match system setting for light or dark mode')
@@ -450,7 +477,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
-
 
     new Setting(containerEl)
       .setName('Folding offset')
@@ -584,7 +610,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .setName('UI font')
         .setDesc('Used for the user interface such as menus and sidebar')
         .addDropdown(dropdown => dropdown
-          .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
+          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
           .addOption('Avenir','Avenir')
           .addOption('iA Writer Mono S','iA Mono')
           .addOption('iA Writer Duo S','iA Duo')
@@ -592,9 +618,9 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('SFMono-Regular','SF Mono')
           .addOption('Consolas','Consolas')
           .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.monoFont)
+          .setValue(this.plugin.settings.uiFont)
             .onChange((value) => {
-              this.plugin.settings.monoFont = value;
+              this.plugin.settings.uiFont = value;
               this.plugin.saveData(this.plugin.settings);
               this.plugin.refresh();
             })
