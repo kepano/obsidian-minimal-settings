@@ -38,6 +38,26 @@ export default class MinimalTheme extends Plugin {
   const theme = ['moonstone', 'obsidian'];
 
   this.addCommand({
+      id: 'increase-body-font-size',
+      name: 'Increase body font size',
+      callback: () => {
+        this.settings.textNormal = this.settings.textNormal + 0.5;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });  
+
+  this.addCommand({
+      id: 'decrease-body-font-size',
+      name: 'Decrease body font size',
+      callback: () => {
+        this.settings.textNormal = this.settings.textNormal - 0.5;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    }); 
+
+  this.addCommand({
       id: 'toggle-minimal-dark-cycle',
       name: 'Cycle between dark mode styles',
       callback: () => {
