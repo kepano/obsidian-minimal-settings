@@ -1,1 +1,308 @@
-/* Empty */
+/* Colorful headings */
+body.color-headings {
+  --h1-color:var(--red);
+  --h2-color:var(--orange);
+  --h3-color:var(--yellow);
+  --h4-color:var(--green);
+  --h5-color:var(--cyan);
+  --h6-color:var(--purple);
+}
+
+/* Minimal Dracula Pro */
+.minimal-dracula {
+  --bg1:#1B1A23;
+  --bg2:#22212C;
+  --bg3:#353243;
+  --bg4:#423F50;
+  --fg1:#F8F8F3;
+  --fg3:#586e75;
+  --fg2:#D5D4DE;
+  --og1:#dddbe8;
+  --og2:#c6c3da;
+  --og3:#a3a0bd;
+  --red:#FF5555;
+  --orange:#FE9580;
+  --green:#8AFF7F;
+  --cyan:#81FFEA;
+  --cyan-transparent:rgba(129, 255, 234, 0.3);
+  --purple:#9580FF;
+  --purple-transparent:rgba(149, 128, 255, 0.5);
+  --pink:#FE7FBF;
+  --blue:#00588E;
+  --yellow:#FEFF7F;
+}
+
+.theme-light.minimal-dracula {
+  --text-normal:var(--bg1);
+  --text-muted:var(--bg1);
+  --text-faint:var(--l-bg4);
+  --text-accent:var(--l-orange-dim);
+  --text-accent-hover:var(--l-orange);
+  --text-selection:var(--l-bg_s);
+  --text-highlight-bg:var(--d-yellow);
+  --code-color:var(--l-purple-dim);
+  --background-primary:var(--og1);
+  --background-primary-alt:var(--og2);
+  --background-secondary:var(--og2);
+  --background-secondary-alt:var(--og2);
+  --background-tertiary:var(--og3);
+  --background-modifier-border:var(--l-bg1);
+  --background-modifier-border-hover:var(--l-bg2);
+  --background-modifier-border-focus:var(--l-bg3);
+  --quote-opening-modifier:var(--l-bg3);
+  --background-modifier-accent:var(--purple);
+  --interactive-accent:var(--purple);
+  --interactive-accent-hover:var(--purple);
+}
+
+.theme-light.minimal-dracula.minimal-light-white {
+  --background-primary:white;
+  --background-secondary:white;
+  --background-primary-alt:var(--l-bg_h);
+  --background-tertiary:var(--l-bg);
+  --background-modifier-border:var(--l-bg_s);
+}
+
+.theme-light.minimal-dracula.minimal-light-tonal {
+  --background-primary:var(--l-bg);
+  --background-primary-alt:var(--l-bg_s);
+  --background-secondary:var(--l-bg);
+  --background-secondary-alt:var(--l-bg);
+  --background-tertiary:var(--l-bg1);
+}
+
+.theme-light.minimal-dracula.minimal-light-contrast .workspace-fake-target-overlay.is-in-sidebar,
+.theme-light.minimal-dracula.minimal-light-contrast .titlebar,
+.theme-light.minimal-dracula.minimal-light-contrast .status-bar,
+.theme-light.minimal-dracula.minimal-light-contrast .workspace-ribbon.mod-left,
+.theme-light.minimal-dracula.minimal-light-contrast .mod-left-split,
+.theme-light.minimal-dracula.minimal-light-contrast.is-mobile .workspace-drawer.mod-left,
+.theme-dark.minimal-dracula {
+  --text-normal:var(--fg1);
+  --text-muted:var(--fg2);
+  --text-faint:var(--bg4);
+  --text-accent:var(--purple);
+  --text-accent-hover:var(--d-orange-dim);
+  --text-selection:var(--l-bg4);
+  --code-color:var(--d-purple-dim);
+  --background-primary:var(--bg1);
+  --background-primary-alt:var(--bg2);
+  --background-secondary:var(--bg2);
+  --background-secondary-alt:var(--bg2);
+  --background-tertiary:var(--bg3);
+  --background-modifier-border:var(--bg3);
+  --background-modifier-border-hover:var(--bg4);
+  --background-modifier-border-focus:var(--bg4);
+  --quote-opening-modifier:var(--bg4);
+  --background-modifier-accent:var(--purple);
+  --interactive-accent:var(--purple);
+  --interactive-accent-hover:var(--purple);
+}
+
+.theme-dark.minimal-dracula.minimal-dark-tonal {
+  --background-primary:var(--bg2);
+  --background-primary-alt:var(--bg1);
+  --background-secondary:var(--bg2);
+  --background-secondary-alt:var(--bg2);
+  --background-tertiary:var(--bg3);
+  --background-modifier-border:var(--bg3);
+}
+
+.theme-dark.minimal-dracula.minimal-dark-black  {
+  --text-normal:var(--fg2);
+  --text-muted:var(--fg2);
+  --text-faint:var(--bg4);
+  --text-accent:var(--purple);
+  --text-selection:var(--l-bg4);
+  --background-primary:black;
+  --background-primary-alt:var(--bg1);
+  --background-secondary:black;
+  --background-secondary-alt:var(--d-bg_h);
+  --background-tertiary:var(--bg2);
+  --background-modifier-border:var(--bg2);
+}
+
+
+/* Minimal Gruvbox */
+
+.minimal-gruvbox {
+  --d-bg_h: #1d2021;
+  --d-bg:   #282828;
+  --d-bg_s: #32302f;
+  --d-bg1:  #3c3836;
+  --d-bg2:  #504945;
+  --d-bg3:  #665c54;
+  --d-bg4:  #7c6f64;
+
+  --d-fg:  #fbf1c7;
+  --d-fg1: #ebdbb2;
+  --d-fg2: #d5c4a1;
+  --d-fg3: #bdae93;
+  --d-fg4: #a89984;
+
+  --d-red:    #fb4934;
+  --d-green:  #b8bb26;
+  --d-yellow: #fabd2f;
+  --d-blue:   #83a598;
+  --d-purple: #d3869b;
+  --d-aqua:   #8ec07c;
+  --d-gray:   #928374;
+  --d-orange: #fe8019;
+
+  --d-red-dim:    #cc2412;
+  --d-green-dim:  #98971a;
+  --d-yellow-dim: #d79921;
+  --d-blue-dim:   #458588;
+  --d-purple-dim: #b16286;
+  --d-aqua-dim:   #689d6a;
+  --d-gray-dim:   #a89984;
+  --d-orange-dim: #d65d0e;
+
+  /* Light */
+
+  --l-bg_h: #f9f5d7;
+  --l-bg:   #fbf1c7;
+  --l-bg_s: #f2e5bc;
+  --l-bg1:  #ebdbb2;
+  --l-bg2:  #d5c4a1;
+  --l-bg3:  #bdae93;
+  --l-bg4:  #a89984;
+
+  --l-fg:  #282828;
+  --l-fg1: #3c3836;
+  --l-fg2: #504945;
+  --l-fg3: #665c54;
+  --l-fg4: #7c6f64;
+
+  --l-red:    #9d0006;
+  --l-green:  #79740e;
+  --l-yellow: #b57614;
+  --l-blue:   #076678;
+  --l-purple: #8f3f71;
+  --l-aqua:   #427b58;
+  --l-orange: #af3a03;
+  --l-gray:   #928374;
+
+  --l-red-dim:    #cc2412;
+  --l-green-dim:  #98971a;
+  --l-yellow-dim: #d79921;
+  --l-blue-dim:   #458598;
+  --l-purple-dim: #b16286;
+  --l-aqua-dim:   #689d6a;
+  --l-orange-dim: #d65d0e;
+  --l-gray-dim:   #7c6f64;
+}
+
+
+/* Colorful headings */
+body.minimal-gruvbox.theme-dark.colorful-headings {
+  --h1-color:var(--d-blue-dim);
+  --h2-color:var(--d-aqua-dim);
+  --h3-color:var(--d-green-dim);
+  --h4-color:var(--d-yellow-dim);
+  --h5-color:var(--d-orange-dim);
+  --h6-color:var(--d-red-dim);
+}
+body.minimal-gruvbox.theme-light.colorful-headings {
+  --h1-color:var(--l-red-dim);
+  --h2-color:var(--l-orange-dim);
+  --h3-color:var(--l-yellow-dim);
+  --h4-color:var(--l-green-dim);
+  --h5-color:var(--l-aqua-dim);
+  --h6-color:var(--l-blue-dim);
+}
+
+.theme-light.minimal-gruvbox {
+  --text-normal:var(--l-fg);
+  --text-muted:var(--l-fg4);
+  --text-faint:var(--l-bg4);
+  --text-accent:var(--l-orange-dim);
+  --text-accent-hover:var(--l-orange);
+  --text-selection:var(--l-bg_s);
+  --text-highlight-bg:var(--d-yellow);
+  --code-color:var(--l-purple-dim);
+
+  --background-primary: var(--l-bg);
+  --background-primary-alt: var(--l-bg_s);
+  --background-secondary: var(--l-bg_s);
+  --background-secondary-alt: var(--l-bg_s);
+  --background-tertiary: var(--l-bg2);
+
+  --background-modifier-border: var(--l-bg1);
+  --background-modifier-border-hover:var(--l-bg2);
+  --background-modifier-border-focus:var(--l-bg3);
+  --quote-opening-modifier: var(--l-bg3);
+
+  --background-modifier-accent:var(--l-orange-dim);
+  --interactive-accent:var(--l-orange-dim);
+  --interactive-accent-hover:var(--l-orange);
+}
+
+.theme-light.minimal-gruvbox.minimal-light-white {
+  --background-primary: white;
+  --background-primary-alt: var(--l-bg_h);
+  --background-tertiary: var(--l-bg);
+  --background-modifier-border: var(--l-bg_s);
+}
+
+.theme-light.minimal-gruvbox.minimal-light-tonal {
+  --background-primary: var(--l-bg);
+  --background-primary-alt: var(--l-bg_s);
+  --background-secondary: var(--l-bg);
+  --background-secondary-alt: var(--l-bg);
+  --background-tertiary: var(--l-bg1);
+}
+
+.theme-light.minimal-gruvbox.minimal-light-contrast .workspace-fake-target-overlay.is-in-sidebar,
+.theme-light.minimal-gruvbox.minimal-light-contrast .titlebar,
+.theme-light.minimal-gruvbox.minimal-light-contrast .status-bar,
+.theme-light.minimal-gruvbox.minimal-light-contrast .workspace-ribbon.mod-left,
+.theme-light.minimal-gruvbox.minimal-light-contrast .mod-left-split,
+.theme-light.minimal-gruvbox.minimal-light-contrast.is-mobile .workspace-drawer.mod-left,
+.theme-dark.minimal-gruvbox {
+  --text-normal:var(--d-fg);
+  --text-muted:var(--d-fg3);
+  --text-faint:var(--d-bg4);
+  --text-accent:var(--d-orange);
+  --text-accent-hover:var(--d-orange-dim);
+  --text-selection:var(--l-bg4);
+  --code-color:var(--d-purple-dim);
+
+  --background-primary: var(--d-bg);
+  --background-primary-alt: var(--d-bg_h);
+  --background-secondary: var(--d-bg_h);
+  --background-secondary-alt: var(--d-bg_h);
+  --background-tertiary: var(--d-bg_s);
+
+  --background-modifier-border: var(--d-bg1);
+  --background-modifier-border-hover:var(--d-bg2);
+  --background-modifier-border-focus:var(--d-bg3);
+  --quote-opening-modifier: var(--d-bg3);
+
+  --background-modifier-accent:var(--d-orange-dim);
+  --interactive-accent:var(--d-orange-dim);
+  --interactive-accent-hover:var(--d-orange);
+}
+
+.theme-dark.minimal-gruvbox.minimal-dark-tonal {
+  --background-secondary: var(--d-bg);
+  --background-secondary-alt: var(--d-bg);
+  --background-tertiary: var(--d-bg1);
+
+  --background-modifier-border: var(--d-bg1);
+}
+
+.theme-dark.minimal-gruvbox.minimal-dark-black  {
+  --text-normal:var(--d-fg);
+  --text-muted:var(--d-fg4);
+  --text-faint:var(--d-bg3);
+  --text-selection:var(--l-bg4);
+
+  --background-primary:black;
+  --background-primary-alt: var(--d-bg_h);
+  --background-secondary:black;
+  --background-secondary-alt: var(--d-bg_h);
+  --background-tertiary: var(--d-bg_h);
+
+  --background-modifier-border: var(--d-bg);
+}

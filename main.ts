@@ -35,6 +35,7 @@ export default class MinimalTheme extends Plugin {
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
+  const colorSchemes = ['minimal-default', 'minimal-dracula', 'minimal-embark', 'minimal-gruvbox', 'minimal-monokai', 'minimal-nord', 'minimal-solarized', 'minimal-custom'];
   const theme = ['moonstone', 'obsidian'];
 
   this.addCommand({
@@ -78,6 +79,16 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-scheme-cycle',
+      name: 'Cycle between color schemes',
+      callback: () => {
+        this.settings.colorScheme = colorSchemes[(colorSchemes.indexOf(this.settings.colorScheme) + 1) % colorSchemes.length];
+        this.saveData(this.settings);
+        this.updateColorScheme();
+      }
+    });
+
+  this.addCommand({
       id: 'toggle-hidden-borders',
       name: 'Toggle sidebar borders',
       callback: () => {
@@ -96,7 +107,6 @@ export default class MinimalTheme extends Plugin {
         this.updateTheme();
       }
     });
-
 
   this.addCommand({
       id: 'toggle-minimal-light-default',
@@ -197,7 +207,7 @@ export default class MinimalTheme extends Plugin {
     css.id = 'minimal-theme';
     document.getElementsByTagName("head")[0].appendChild(css);
 
-    // add the main class
+    // add the main culass
     document.body.classList.add('minimal-theme');
 
     // update the style with the settings-dependent styles
@@ -207,8 +217,10 @@ export default class MinimalTheme extends Plugin {
   // update the styles (at the start, or as the result of a settings change)
   updateStyle() {
     this.removeStyle();
+    document.body.classList.add(this.settings.colorScheme);
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
     document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
+    document.body.classList.toggle('color-headings', this.settings.colorHeadings);
     document.body.classList.toggle('focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
@@ -275,6 +287,12 @@ export default class MinimalTheme extends Plugin {
     this.app.workspace.trigger('css-change');
   }
 
+  updateColorScheme() {
+    document.body.removeClass('minimal-default','minimal-dracula','minimal-embark','minimal-gruvbox','minimal-monokai','minimal-nord','minimal-solarized','minimal-custom');
+    document.body.addClass(this.settings.colorScheme);
+    this.app.workspace.trigger('css-change');
+  }
+
   updateTheme() {
     // @ts-ignore
     this.app.setTheme(this.settings.theme);
@@ -294,6 +312,7 @@ interface MinimalSettings {
   theme: string;
   accentHue: number;
   accentSat: number;
+  colorScheme: string;
   lightStyle: string;
   darkStyle: string;
   uiFont: string;
@@ -301,6 +320,7 @@ interface MinimalSettings {
   editorFont: string;
   monoFont: string;
   fancyCursor: boolean;
+  colorHeadings: boolean;
   minimalIcons: boolean;
   trimNames: boolean;
   bordersToggle: boolean;
@@ -323,6 +343,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   theme: 'moonstone',
   accentHue: 201,
   accentSat: 17,
+  colorScheme: 'minimal-default',
   lightStyle: 'minimal-light',
   darkStyle: 'minimal-dark',
   uiFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
@@ -335,6 +356,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   textSmall: 13,
   minimalIcons: true,
   fancyCursor: true,
+  colorHeadings: false,
   trimNames: true,
   fullWidthMedia: true,
   bordersToggle: true,
@@ -366,7 +388,6 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('a', {text: '⬤ Accent color'});
     containerEl.createEl('h3');
 
-
       new Setting(containerEl)
         .setName('Accent color hue')
         .setDesc('For links and interactive elements')
@@ -390,6 +411,25 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
+
+      new Setting(containerEl)
+        .setName('Color scheme')
+        .setDesc('Background colors in light mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('minimal-default','Default')
+          .addOption('minimal-dracula','Dracula Pro')
+          .addOption('minimal-embark','Embark')
+          .addOption('minimal-gruvbox','Gruvbox')
+          .addOption('minimal-monokai','Monokai')
+          .addOption('minimal-nord','Nord')
+          .addOption('minimal-solarized','Solarized')
+          .addOption('minimal-custom','Custom')
+          .setValue(this.plugin.settings.colorScheme)
+        .onChange((value) => {
+          this.plugin.settings.colorScheme = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.updateColorScheme();
+        }));
 
       new Setting(containerEl)
         .setName('Light mode style')
@@ -436,11 +476,22 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
-      .setName('Fancy cursor')
+      .setName('Colorful cursor')
       .setDesc('The editor cursor uses your accent color')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
           .onChange((value) => {
             this.plugin.settings.fancyCursor = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Colorful headings')
+      .setDesc('Headings use colors')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorHeadings)
+          .onChange((value) => {
+            this.plugin.settings.colorHeadings = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
