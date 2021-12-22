@@ -198,6 +198,7 @@ export default class MinimalTheme extends Plugin {
   refresh() {
     // re-load the style
     this.updateStyle()
+    this.app.workspace.trigger("parse-style-settings")
   }
 
   // add the styling elements we need
@@ -385,8 +386,9 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.empty();
     containerEl.createEl('h3', {text: 'Minimal Theme Settings'});
     containerEl.createEl('p', {text: 'If you notice any issues, update to the latest version of Minimal Theme and reload Obsidian. Download the Hider plugin for additional options to further simplify the Obsidian UI.'});
-    containerEl.createEl('a', {text: '⬤ Accent color'});
     containerEl.createEl('h3');
+    containerEl.createEl('h3', {text: 'Color scheme and background'});
+    containerEl.createEl('a', {text: '⬤ Accent color'});
 
       new Setting(containerEl)
         .setName('Accent color hue')
@@ -432,7 +434,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
       new Setting(containerEl)
-        .setName('Light mode style')
+        .setName('Light mode background style')
         .setDesc('Background colors in light mode')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-light','Default')
@@ -447,7 +449,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
       new Setting(containerEl)
-        .setName('Dark mode style')
+        .setName('Dark mode background style')
         .setDesc('Background colors in dark mode')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-dark','Default')
@@ -459,21 +461,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.saveData(this.plugin.settings);
             this.plugin.removeStyle();
           }));
-
-    containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Features'});
-
-    new Setting(containerEl)
-      .setName('Custom icons')
-      .setDesc('Replace default icons with Minimal set')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
-          .onChange((value) => {
-            this.plugin.settings.minimalIcons = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-            })
-          );
 
     new Setting(containerEl)
       .setName('Colorful cursor')
@@ -492,6 +479,21 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.colorHeadings)
           .onChange((value) => {
             this.plugin.settings.colorHeadings = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    containerEl.createEl('br');
+    containerEl.createEl('h3');
+    containerEl.createEl('h3', {text: 'Features'});
+
+    new Setting(containerEl)
+      .setName('Custom icons')
+      .setDesc('Replace default icons with Minimal set')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
+          .onChange((value) => {
+            this.plugin.settings.minimalIcons = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
