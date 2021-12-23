@@ -35,6 +35,10 @@ export default class MinimalTheme extends Plugin {
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
+  const imgGridStyles = ['img-grid','img-grid-ratio','img-nogrid'];
+  const tableWidthStyles = ['table-100','table-default-width','table-wide','table-max'];
+  const iframeWidthStyles = ['iframe-100','iframe-default-width','iframe-wide','iframe-max'];
+  const imgWidthStyles = ['img-100','img-default-width','img-wide','img-max'];
   const theme = ['moonstone', 'obsidian'];
 
   this.addCommand({
@@ -88,6 +92,55 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-focus-mode',
+      name: 'Toggle focus mode',
+      callback: () => {
+        this.settings.focusMode = !this.settings.focusMode;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
+      id: 'cycle-minimal-table-width',
+      name: 'Cycle between table width options',
+      callback: () => {
+        this.settings.tableWidth = tableWidthStyles[(tableWidthStyles.indexOf(this.settings.tableWidth) + 1) % tableWidthStyles.length];
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
+      id: 'cycle-minimal-image-width',
+      name: 'Cycle between image width options',
+      callback: () => {
+        this.settings.imgWidth = imgWidthStyles[(imgWidthStyles.indexOf(this.settings.imgWidth) + 1) % imgWidthStyles.length];
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
+      id: 'cycle-minimal-iframe-width',
+      name: 'Cycle between iframe width options',
+      callback: () => {
+        this.settings.iframeWidth = iframeWidthStyles[(iframeWidthStyles.indexOf(this.settings.iframeWidth) + 1) % iframeWidthStyles.length];
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+  this.addCommand({
+      id: 'toggle-minimal-img-grid',
+      name: 'Toggle image grids',
+      callback: () => {
+        this.settings.imgGrid = !this.settings.imgGrid;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
       id: 'toggle-minimal-switch',
       name: 'Switch between light and dark mode',
       callback: () => {
@@ -96,7 +149,6 @@ export default class MinimalTheme extends Plugin {
         this.updateTheme();
       }
     });
-
 
   this.addCommand({
       id: 'toggle-minimal-light-default',
@@ -208,18 +260,25 @@ export default class MinimalTheme extends Plugin {
   updateStyle() {
     this.removeStyle();
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
+    document.body.classList.toggle('borders-title', this.settings.bordersTitle);
     document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
-    document.body.classList.toggle('focus-mode', this.settings.focusMode);
+    document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
     document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
     document.body.classList.toggle('full-width-media', this.settings.fullWidthMedia);
+    document.body.classList.toggle('img-grid', this.settings.imgGrid);
     document.body.classList.toggle('minimal-status-off', !this.settings.minimalStatus);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
     document.body.classList.toggle('minimal-rel-preview', this.settings.relationLinesPreview);
+
+    document.body.removeClass('table-wide','table-max','table-100','table-default-width','iframe-wide','iframe-max','iframe-100','iframe-default-width','img-wide','img-max','img-100','img-default-width');
+    document.body.addClass(this.settings.tableWidth);
+    document.body.addClass(this.settings.imgWidth);
+    document.body.addClass(this.settings.iframeWidth);
 
     // get the custom css element
     const el = document.getElementById('minimal-theme');
@@ -231,6 +290,7 @@ export default class MinimalTheme extends Plugin {
           --font-normal:${this.settings.textNormal}px;
           --font-small:${this.settings.textSmall}px;
           --line-width:${this.settings.lineWidth}rem;
+          --line-width-wide:${this.settings.lineWidthWide}rem;
           --max-width:${this.settings.maxWidth}%;
           --text:${this.settings.textFont};
           --text-editor:${this.settings.editorFont};
@@ -304,9 +364,15 @@ interface MinimalSettings {
   minimalIcons: boolean;
   trimNames: boolean;
   bordersToggle: boolean;
+  bordersTitle: boolean;
   focusMode: boolean;
   lineWidth: number;
+  lineWidthWide: number;
   maxWidth: number;
+  imgGrid: boolean;
+  tableWidth: string;
+  iframeWidth: string;
+  imgWidth: string;
   fullWidthMedia: boolean,
   minimalStatus: boolean,
   textNormal: number;
@@ -330,14 +396,20 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   editorFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
   monoFont: 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace',
   lineWidth: 40,
+  lineWidthWide: 50,
   maxWidth: 88,
   textNormal: 16,
   textSmall: 13,
+  imgGrid: false,
+  imgWidth: 'img-default-width',
+  tableWidth: 'table-default-width',
+  iframeWidth: 'iframe-default-width',
   minimalIcons: true,
   fancyCursor: true,
   trimNames: true,
   fullWidthMedia: true,
   bordersToggle: true,
+  bordersTitle: false,
   minimalStatus: true,
   focusMode: false,
   underlineInternal: true,
@@ -425,6 +497,17 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('h3', {text: 'Features'});
 
     new Setting(containerEl)
+      .setName('Match system setting for light or dark mode')
+      .setDesc('Automatically switch based on your OS setting')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.useSystemTheme)
+          .onChange((value) => {
+            this.plugin.settings.useSystemTheme = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refreshSystemTheme();
+            })
+          );
+
+    new Setting(containerEl)
       .setName('Custom icons')
       .setDesc('Replace default icons with Minimal set')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
@@ -456,20 +539,9 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
           }));
 
-    new Setting(containerEl)
-      .setName('Match system setting for light or dark mode')
-      .setDesc('Automatically switch based on your OS setting')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.useSystemTheme)
-          .onChange((value) => {
-            this.plugin.settings.useSystemTheme = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refreshSystemTheme();
-            })
-          );
-
       new Setting(containerEl)
-        .setName('Hide sidebar borders')
-        .setDesc('Turn off borders on sidebars')
+        .setName('Sidebar borders')
+        .setDesc('Display borders between sidebar elements')
         .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersToggle)
           .onChange((value) => {
             this.plugin.settings.bordersToggle = value;
@@ -477,9 +549,19 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
           }));
 
+      new Setting(containerEl)
+        .setName('Title bar border')
+        .setDesc('Display border below pane title (if borders are not hidden)')
+        .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersTitle)
+          .onChange((value) => {
+            this.plugin.settings.bordersTitle = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
     new Setting(containerEl)
-      .setName('Hide action buttons in focus mode')
-      .setDesc('When sidebars are collapsed, hide action buttons (hover to reveal them)')
+      .setName('Focus mode')
+      .setDesc('Hide UI when a single file is open. UI is accessible on hover.')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
@@ -529,16 +611,6 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     new Setting(containerEl)
-      .setName('Maximize media')
-      .setDesc('Images and videos fill the width of the line')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.fullWidthMedia)
-          .onChange((value) => {
-            this.plugin.settings.fullWidthMedia = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-    new Setting(containerEl)
       .setName('Underline internal links')
       .setDesc('Show underlines on internal links')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.underlineInternal)
@@ -560,6 +632,78 @@ class MinimalSettingTab extends PluginSettingTab {
             })
           );
 
+    new Setting(containerEl)
+      .setName('Maximize media')
+      .setDesc('Images and videos fill the width of the line')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.fullWidthMedia)
+          .onChange((value) => {
+            this.plugin.settings.fullWidthMedia = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    containerEl.createEl('br');
+    containerEl.createEl('h3');
+    containerEl.createEl('h3', {text: 'Layout'});
+    containerEl.createEl('p', {text: 'The following options require the Contextual Typography plugin. These options can also be defined on a per-file basis using YAML, see documentation for details.'});
+
+    new Setting(containerEl)
+      .setName('Image grids')
+      .setDesc('Turn consecutive images into columns. To make a new row, add an extra line break between images.')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.imgGrid)
+          .onChange((value) => {
+            this.plugin.settings.imgGrid = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Image width')
+      .setDesc('Default width for images and image grids')
+      .addDropdown(dropdown => dropdown
+        .addOption('img-default-width','Default')
+        .addOption('img-wide','Wide line width')
+        .addOption('img-max','Maximum line width')
+        .addOption('img-100','100% pane width')
+        .setValue(this.plugin.settings.imgWidth)
+          .onChange((value) => {
+            this.plugin.settings.imgWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
+
+    new Setting(containerEl)
+      .setName('Table width')
+      .setDesc('Default width for table and Dataview elements')
+      .addDropdown(dropdown => dropdown
+        .addOption('table-default-width','Default')
+        .addOption('table-wide','Wide line width')
+        .addOption('table-max','Maximum line width')
+        .addOption('table-100','100% pane width')
+        .setValue(this.plugin.settings.tableWidth)
+          .onChange((value) => {
+            this.plugin.settings.tableWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
+
+    new Setting(containerEl)
+      .setName('Iframe width')
+      .setDesc('Default width for iframe elements')
+      .addDropdown(dropdown => dropdown
+        .addOption('iframe-default-width','Default')
+        .addOption('iframe-wide','Wide line width')
+        .addOption('iframe-max','Maximum line width')
+        .addOption('iframe-100','100% pane width')
+        .setValue(this.plugin.settings.iframeWidth)
+          .onChange((value) => {
+            this.plugin.settings.iframeWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
@@ -628,7 +772,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('UI font')
-        .setDesc('Used for the user interface such as menus and sidebar')
+        .setDesc('Used for the user interface including buttons, menus and sidebar')
         .addDropdown(dropdown => dropdown
           .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
           .addOption('Avenir','Avenir')
@@ -645,28 +789,6 @@ class MinimalSettingTab extends PluginSettingTab {
               this.plugin.refresh();
             })
           );
-
-    new Setting(containerEl)
-      .setName('Normal line width')
-      .setDesc('Number of characters per line (default 40)')
-      .addText(text => text.setPlaceholder('40')
-        .setValue((this.plugin.settings.lineWidth || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.lineWidth = parseInt(value.trim());
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('Maximum line width')
-      .setDesc('Percentage of space inside a pane that a line can fill. Recommended values between 80 to 100 (default 88)')
-      .addText(text => text.setPlaceholder('88')
-        .setValue((this.plugin.settings.maxWidth || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.maxWidth = parseInt(value.trim());
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
 
     new Setting(containerEl)
       .setName('Body font size')
@@ -690,10 +812,43 @@ class MinimalSettingTab extends PluginSettingTab {
           this.plugin.refresh();
         }));
 
+    new Setting(containerEl)
+      .setName('Normal line width')
+      .setDesc('Number of characters per line (default 40)')
+      .addText(text => text.setPlaceholder('40')
+        .setValue((this.plugin.settings.lineWidth || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.lineWidth = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Wide line width')
+      .setDesc('Number of characters per line for wide elements (default 50)')
+      .addText(text => text.setPlaceholder('50')
+        .setValue((this.plugin.settings.lineWidthWide || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.lineWidthWide = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Maximum line width %')
+      .setDesc('Percentage of space inside a pane that a line can fill. (default 88)')
+      .addText(text => text.setPlaceholder('88')
+        .setValue((this.plugin.settings.maxWidth || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.maxWidth = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
     containerEl.createEl('br');
     containerEl.createEl('h3');
     containerEl.createEl('h3', {text: 'Custom fonts'});
-    containerEl.createEl('p', {text: 'These settings override the dropdowns above. Make sure to use the exact name of the font as it appears on your system.'});
+    containerEl.createEl('p', {text: 'Overrides the dropdowns above. Use the exact name of the font as it appears on your system.'});
 
     new Setting(containerEl)
       .setName('Custom text font')
