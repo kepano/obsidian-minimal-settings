@@ -270,6 +270,8 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('img-grid', this.settings.imgGrid);
     document.body.classList.toggle('minimal-status-off', !this.settings.minimalStatus);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
+    document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
+    document.body.classList.toggle('trim-cols', this.settings.trimCols);
     document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
@@ -292,6 +294,7 @@ export default class MinimalTheme extends Plugin {
           --line-width:${this.settings.lineWidth}rem;
           --line-width-wide:${this.settings.lineWidthWide}rem;
           --max-width:${this.settings.maxWidth}%;
+          --max-col-width:${this.settings.maxColWidth};
           --text:${this.settings.textFont};
           --text-editor:${this.settings.editorFont};
           --font-ui:${this.settings.uiFont};
@@ -363,12 +366,15 @@ interface MinimalSettings {
   fancyCursor: boolean;
   minimalIcons: boolean;
   trimNames: boolean;
+  labeledNav: boolean;
   bordersToggle: boolean;
   bordersTitle: boolean;
   focusMode: boolean;
   lineWidth: number;
   lineWidthWide: number;
   maxWidth: number;
+  trimCols: boolean;
+  maxColWidth: string;
   imgGrid: boolean;
   tableWidth: string;
   iframeWidth: string;
@@ -398,6 +404,8 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   lineWidth: 40,
   lineWidthWide: 50,
   maxWidth: 88,
+  trimCols: true,
+  maxColWidth: '18em',
   textNormal: 16,
   textSmall: 13,
   imgGrid: false,
@@ -407,6 +415,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   minimalIcons: true,
   fancyCursor: true,
   trimNames: true,
+  labeledNav: false,
   fullWidthMedia: true,
   bordersToggle: true,
   bordersTitle: false,
@@ -530,6 +539,26 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
+      .setName('Text labels for primary navigation')
+      .setDesc('Navigation in left sidebar uses text labels')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.labeledNav)
+          .onChange((value) => {
+            this.plugin.settings.labeledNav = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Trim file names in sidebars')
+      .setDesc('Use ellipses to fit file names on a single line')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimNames)
+          .onChange((value) => {
+            this.plugin.settings.trimNames = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
       .setName('Minimal status bar')
       .setDesc('Use narrow status bar')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalStatus)
@@ -569,16 +598,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
             })
           );
-
-    new Setting(containerEl)
-      .setName('Trim file names in sidebars')
-      .setDesc('Use ellipses to fit file names on a single line')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimNames)
-          .onChange((value) => {
-            this.plugin.settings.trimNames = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
 
     new Setting(containerEl)
       .setName('Folding offset')
@@ -704,6 +723,32 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
           })
         );
+
+    containerEl.createEl('br');
+    containerEl.createEl('h3');
+    containerEl.createEl('h3', {text: 'Tables'});
+
+    new Setting(containerEl)
+      .setName('Trim Dataview columns')
+      .setDesc('Disables word wrapping in table cells, and trims long text')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimCols)
+          .onChange((value) => {
+            this.plugin.settings.trimCols = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Dataview maximum column width')
+      .setDesc('Maximum width for Dataview columns, accepts any CSS width value')
+      .addText(text => text.setPlaceholder('')
+        .setValue((this.plugin.settings.maxColWidth || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.maxColWidth = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
