@@ -274,8 +274,6 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('trim-cols', this.settings.trimCols);
     document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
-    document.body.classList.toggle('minimal-rel-edit', this.settings.relationLinesEdit);
-    document.body.classList.toggle('minimal-rel-preview', this.settings.relationLinesPreview);
 
     document.body.removeClass('table-wide','table-max','table-100','table-default-width','iframe-wide','iframe-max','iframe-100','iframe-default-width','img-wide','img-max','img-100','img-default-width');
     document.body.addClass(this.settings.tableWidth);
@@ -319,7 +317,12 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateDarkStyle() {
-    document.body.removeClass('theme-light','minimal-dark','minimal-dark-tonal','minimal-dark-black');
+    document.body.removeClass(
+      'theme-light',
+      'minimal-dark',
+      'minimal-dark-tonal',
+      'minimal-dark-black'
+    );
     document.body.addClass(this.settings.darkStyle);
     // @ts-ignore
     this.app.setTheme('obsidian');
@@ -329,13 +332,45 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateLightStyle() {
-    document.body.removeClass('theme-dark','minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white');
+    document.body.removeClass(
+      'theme-dark',
+      'minimal-light',
+      'minimal-light-tonal',
+      'minimal-light-contrast',
+      'minimal-light-white'
+    );
     document.body.addClass(this.settings.lightStyle);
     // @ts-ignore
     this.app.setTheme('moonstone');
     // @ts-ignore
     this.app.vault.setConfig('theme', 'moonstone');
     this.app.workspace.trigger('css-change');
+  }
+
+  updateDarkScheme() {
+    document.body.removeClass(
+      'minimal-default-dark',
+      'minimal-dracula-dark',
+      'minimal-gruvbox-dark',
+      'minimal-nord-dark',
+      'minimal-notion-dark',
+      'minimal-solarized-dark',
+      'minimal-things-dark'
+    );
+    document.body.addClass(this.settings.darkScheme);
+  }
+
+  updateLightScheme() {
+    document.body.removeClass(
+      'minimal-default-light',
+      'minimal-dracula-light',
+      'minimal-gruvbox-light',
+      'minimal-nord-light',
+      'minimal-notion-light',
+      'minimal-solarized-light',
+      'minimal-things-light'
+    );
+    document.body.addClass(this.settings.lightScheme);
   }
 
   updateTheme() {
@@ -359,6 +394,8 @@ interface MinimalSettings {
   accentSat: number;
   lightStyle: string;
   darkStyle: string;
+  lightScheme: string;
+  darkScheme: string;
   uiFont: string;
   textFont: string;
   editorFont: string;
@@ -387,8 +424,6 @@ interface MinimalSettings {
   underlineExternal: boolean;
   useSystemTheme: boolean;
   folding: boolean;
-  relationLinesPreview: boolean;
-  relationLinesEdit: boolean;
 }
 
 const DEFAULT_SETTINGS: MinimalSettings = {
@@ -397,6 +432,8 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   accentSat: 17,
   lightStyle: 'minimal-light',
   darkStyle: 'minimal-dark',
+  lightScheme: 'minimal-default-light',
+  darkScheme: 'minimal-default-dark',
   uiFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
   textFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
   editorFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
@@ -424,9 +461,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   underlineInternal: true,
   underlineExternal: true,
   useSystemTheme: false,
-  folding: false,
-  relationLinesPreview: false,
-  relationLinesEdit: false
+  folding: false
 }
 
 class MinimalSettingTab extends PluginSettingTab {
@@ -446,64 +481,67 @@ class MinimalSettingTab extends PluginSettingTab {
 
     const mainDesc = containerEl.createEl('p');
 
-      mainDesc.appendChild(
-        createEl('span', {
-          text: 'If you notice any issues, update your theme and plugins, then restart Obsidian. Install the '
-          })
-        );
+      mainDesc.appendText('Need help? Explore the ');
       mainDesc.appendChild(
         createEl('a', {
-          text: "Hider plugin",
-          href: "obsidian://show-plugin?id=obsidian-hider",
-        })
-      );
-      mainDesc.appendText(' to further simplify the Obsidian UI. For more information about Minimal ');
-      mainDesc.appendChild(
-        createEl('a', {
-          text: "see documentation",
+          text: "Minimal documentation",
           href: "https://github.com/kepano/obsidian-minimal/blob/master/README.md",
         })
       );
-      mainDesc.appendText('. Need help? Visit the ');
+      mainDesc.appendText(' or visit the ');
       mainDesc.appendChild(
         createEl('strong', {
           text: "#minimal",
         })
       );
-      mainDesc.appendText(' channel in the official Obsidian Discord.');
+      mainDesc.appendText(' channel in the official Obsidian Discord. You can support continued development by ');
+      mainDesc.appendChild(
+        createEl('a', {
+          text: "buying me a coffee",
+          href: "https://www.buymeacoffee.com/kepano",
+        })
+      );
+      mainDesc.appendText(' ☕');
 
     containerEl.createEl('br');
-    containerEl.createEl('a', {text: '⬤ Accent color'});
-    containerEl.createEl('h3');
+    containerEl.createEl('h3', {text: 'Color scheme'});
 
+    const colorDesc = containerEl.createEl('p');
 
-      new Setting(containerEl)
-        .setName('Accent color hue')
-        .setDesc('For links and interactive elements')
-        .addSlider(slider => slider
-            .setLimits(0, 360, 1)
-            .setValue(this.plugin.settings.accentHue)
-          .onChange((value) => {
-            this.plugin.settings.accentHue = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-      new Setting(containerEl)
-        .setName('Accent color saturation')
-        .setDesc('For links and interactive elements')
-        .addSlider(slider => slider
-            .setLimits(0, 100, 1)
-            .setValue(this.plugin.settings.accentSat)
-          .onChange((value) => {
-            this.plugin.settings.accentSat = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
+      colorDesc.appendChild(
+        createEl('span', {
+          text: 'To create a completely custom color scheme use '
+          })
+        );
+      colorDesc.appendChild(
+        createEl('a', {
+          text: "Style Settings plugin",
+          href: "obsidian://show-plugin?id=obsidian-style-settings",
+        })
+      );
+      colorDesc.appendText('.');
 
       new Setting(containerEl)
-        .setName('Light mode style')
-        .setDesc('Background colors in light mode')
+        .setName('Light mode color scheme')
+        .setDesc('Preset color options for light mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('minimal-default-light','Default')
+          .addOption('minimal-dracula-light','Dracula')
+          .addOption('minimal-gruvbox-light','Gruvbox')
+          .addOption('minimal-nord-light','Nord')
+          .addOption('minimal-notion-light','Notion')
+          .addOption('minimal-solarized-light','Solarized')
+          .addOption('minimal-things-light','Things')
+          .setValue(this.plugin.settings.lightScheme)
+        .onChange((value) => {
+          this.plugin.settings.lightScheme = value;
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.updateLightScheme();
+        }));
+
+      new Setting(containerEl)
+        .setName('Light mode background contrast')
+        .setDesc('Level of contrast between sidebar and main content')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-light','Default')
           .addOption('minimal-light-white','All white')
@@ -517,8 +555,26 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
       new Setting(containerEl)
-        .setName('Dark mode style')
-        .setDesc('Background colors in dark mode')
+        .setName('Dark mode color scheme')
+        .setDesc('Preset colors options for dark mode')
+        .addDropdown(dropdown => dropdown
+          .addOption('minimal-default-dark','Default')
+          .addOption('minimal-dracula-dark','Dracula')
+          .addOption('minimal-gruvbox-dark','Gruvbox')
+          .addOption('minimal-nord-dark','Nord')
+          .addOption('minimal-notion-dark','Notion')
+          .addOption('minimal-solarized-dark','Solarized')
+          .addOption('minimal-things-dark','Things')
+          .setValue(this.plugin.settings.darkScheme)
+          .onChange((value) => {
+            this.plugin.settings.darkScheme = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.updateDarkScheme();
+          }));
+
+      new Setting(containerEl)
+        .setName('Dark mode background contrast')
+        .setDesc('Level of contrast between sidebar and main content')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-dark','Default')
           .addOption('minimal-dark-tonal','Low contrast')
@@ -528,6 +584,30 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.settings.darkStyle = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.removeStyle();
+          }));
+
+      new Setting(containerEl)
+        .setName('Accent color hue')
+        .setDesc('For links and interactive elements in default color scheme')
+        .addSlider(slider => slider
+            .setLimits(0, 360, 1)
+            .setValue(this.plugin.settings.accentHue)
+          .onChange((value) => {
+            this.plugin.settings.accentHue = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+      new Setting(containerEl)
+        .setName('Accent color saturation')
+        .setDesc('For links and interactive elements in default color scheme')
+        .addSlider(slider => slider
+            .setLimits(0, 100, 1)
+            .setValue(this.plugin.settings.accentSat)
+          .onChange((value) => {
+            this.plugin.settings.accentSat = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
           }));
 
     containerEl.createEl('br');
@@ -634,26 +714,6 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.folding)
           .onChange((value) => {
             this.plugin.settings.folding = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-    new Setting(containerEl)
-      .setName('Relationship lines in Preview')
-      .setDesc('Show vertical lines that connect related bullet points and task lists')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.relationLinesPreview)
-          .onChange((value) => {
-            this.plugin.settings.relationLinesPreview = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-    new Setting(containerEl)
-      .setName('Relationship lines in Editor')
-      .setDesc('Show vertical lines that connect related bullet points and task lists')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.relationLinesEdit)
-          .onChange((value) => {
-            this.plugin.settings.relationLinesEdit = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
@@ -1028,6 +1088,7 @@ class MinimalSettingTab extends PluginSettingTab {
         parser.parseFromString(buyMeACoffee, 'text/xml').documentElement,
       ),
     );
+
 
   }
 }
