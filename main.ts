@@ -259,6 +259,10 @@ export default class MinimalTheme extends Plugin {
   // update the styles (at the start, or as the result of a settings change)
   updateStyle() {
     this.removeStyle();
+
+    document.body.addClass(this.settings.darkScheme);
+    document.body.addClass(this.settings.lightScheme);
+
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
     document.body.classList.toggle('borders-title', this.settings.bordersTitle);
     document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
