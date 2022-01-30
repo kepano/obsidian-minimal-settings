@@ -220,6 +220,151 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
+  this.addCommand({
+      id: 'toggle-minimal-default-light',
+      name: 'Switch light color scheme to Default (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-default-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-gruvbox-light',
+      name: 'Switch light color scheme to Gruvbox (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-gruvbox-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-notion-light',
+      name: 'Switch light color scheme to Notion (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-notion-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-nord-light',
+      name: 'Switch light color scheme to Nord (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-nord-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+
+  this.addCommand({
+      id: 'toggle-minimal-solarized-light',
+      name: 'Switch light color scheme to Solarized (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-solarized-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+
+  this.addCommand({
+      id: 'toggle-minimal-things-light',
+      name: 'Switch light color scheme to Things (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-things-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-dracula-dark',
+      name: 'Switch color scheme to Dracula (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-dracula-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-default-dark',
+      name: 'Switch dark color scheme to Default (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-default-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-gruvbox-dark',
+      name: 'Switch dark color scheme to Gruvbox (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-gruvbox-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-nord-dark',
+      name: 'Switch dark color scheme to Nord (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-nord-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-notion-dark',
+      name: 'Switch dark color scheme to Notion (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-notion-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-solarized-dark',
+      name: 'Switch dark color scheme to Solarized (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-solarized-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-things-dark',
+      name: 'Switch dark color scheme to Things (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-things-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
   this.refresh()
 
 }
