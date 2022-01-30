@@ -222,7 +222,7 @@ export default class MinimalTheme extends Plugin {
 
   this.addCommand({
       id: 'toggle-minimal-default-light',
-      name: 'Switch light color scheme to Default (light)',
+      name: 'Switch light color scheme to default (light)',
       callback: () => {
         this.settings.lightScheme = 'minimal-default-light';
         this.saveData(this.settings);
@@ -301,7 +301,7 @@ export default class MinimalTheme extends Plugin {
 
   this.addCommand({
       id: 'toggle-minimal-default-dark',
-      name: 'Switch dark color scheme to Default (dark)',
+      name: 'Switch dark color scheme to default (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-default-dark';
         this.saveData(this.settings);
@@ -438,6 +438,7 @@ export default class MinimalTheme extends Plugin {
         body.minimal-theme{
           --font-normal:${this.settings.textNormal}px;
           --font-small:${this.settings.textSmall}px;
+          --line-height:${this.settings.lineHeight};
           --line-width:${this.settings.lineWidth}rem;
           --line-width-wide:${this.settings.lineWidthWide}rem;
           --max-width:${this.settings.maxWidth}%;
@@ -555,6 +556,7 @@ interface MinimalSettings {
   bordersToggle: boolean;
   bordersTitle: boolean;
   focusMode: boolean;
+  lineHeight: number;
   lineWidth: number;
   lineWidthWide: number;
   maxWidth: number;
@@ -586,6 +588,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   textFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
   editorFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
   monoFont: 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace',
+  lineHeight: 1.5,
   lineWidth: 40,
   lineWidthWide: 50,
   maxWidth: 88,
@@ -1110,6 +1113,17 @@ class MinimalSettingTab extends PluginSettingTab {
         .setValue((this.plugin.settings.textSmall || '') + '')
         .onChange((value) => {
           this.plugin.settings.textSmall = parseInt(value.trim());
+          this.plugin.saveData(this.plugin.settings);
+          this.plugin.refresh();
+        }));
+
+    new Setting(containerEl)
+      .setName('Line height')
+      .setDesc('Line height of text (default 1.5)')
+      .addText(text => text.setPlaceholder('1.5')
+        .setValue((this.plugin.settings.lineHeight || '') + '')
+        .onChange((value) => {
+          this.plugin.settings.lineHeight = parseFloat(value);
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
