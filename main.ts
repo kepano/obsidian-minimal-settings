@@ -363,7 +363,6 @@ export default class MinimalTheme extends Plugin {
   updateLightScheme() {
     document.body.removeClass(
       'minimal-default-light',
-      'minimal-dracula-light',
       'minimal-gruvbox-light',
       'minimal-nord-light',
       'minimal-notion-light',
@@ -526,7 +525,6 @@ class MinimalSettingTab extends PluginSettingTab {
         .setDesc('Preset color options for light mode')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-light','Default')
-          .addOption('minimal-dracula-light','Dracula')
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-nord-light','Nord')
           .addOption('minimal-notion-light','Notion')
