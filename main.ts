@@ -91,6 +91,17 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
+
+  this.addCommand({
+      id: 'toggle-colorful-headings',
+      name: 'Toggle colorful headings',
+      callback: () => {
+        this.settings.colorfulHeadings = !this.settings.colorfulHeadings;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
   this.addCommand({
       id: 'toggle-minimal-focus-mode',
       name: 'Toggle focus mode',
@@ -410,6 +421,7 @@ export default class MinimalTheme extends Plugin {
 
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
     document.body.classList.toggle('borders-title', this.settings.bordersTitle);
+    document.body.classList.toggle('colorful-headings', this.settings.colorfulHeadings);
     document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
     document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
@@ -423,6 +435,7 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('trim-cols', this.settings.trimCols);
     document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
+    document.body.classList.toggle('frosted-sidebar', this.settings.frostedSidebar);
 
     document.body.removeClass('table-wide','table-max','table-100','table-default-width','iframe-wide','iframe-max','iframe-100','iframe-default-width','img-wide','img-max','img-100','img-default-width');
     document.body.addClass(this.settings.tableWidth);
@@ -549,7 +562,9 @@ interface MinimalSettings {
   textFont: string;
   editorFont: string;
   monoFont: string;
+  colorfulHeadings: boolean;
   fancyCursor: boolean;
+  frostedSidebar: boolean;
   minimalIcons: boolean;
   trimNames: boolean;
   labeledNav: boolean;
@@ -600,8 +615,10 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   imgWidth: 'img-default-width',
   tableWidth: 'table-default-width',
   iframeWidth: 'iframe-default-width',
+  colorfulHeadings: false,
   minimalIcons: true,
   fancyCursor: true,
+  frostedSidebar: true,
   trimNames: true,
   labeledNav: false,
   fullWidthMedia: true,
@@ -798,8 +815,19 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
+      .setName('Colorful headings')
+      .setDesc('Use different colors for each heading')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulHeadings)
+          .onChange((value) => {
+            this.plugin.settings.colorfulHeadings = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
       .setName('Text labels for primary navigation')
-      .setDesc('Navigation in left sidebar uses text labels. For non-English users this feature requires an additional snippet available on Github.')
+      .setDesc('Navigation in left sidebar uses text labels (for non-English users this requires a translation snippet available on Github)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.labeledNav)
           .onChange((value) => {
             this.plugin.settings.labeledNav = value;
@@ -827,6 +855,17 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
           }));
 
+    new Setting(containerEl)
+      .setName('Translucent sidebar')
+      .setDesc('Use frosted glass effect for sidebar when "Translucent window" is on in Appearance settings')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.frostedSidebar)
+          .onChange((value) => {
+            this.plugin.settings.frostedSidebar = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
       new Setting(containerEl)
         .setName('Sidebar borders')
         .setDesc('Display borders between sidebar elements')
@@ -849,7 +888,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Focus mode')
-      .setDesc('Hide UI when a single file is open. UI is accessible on hover.')
+      .setDesc('Hide UI when a single file is open (UI is accessible on hover)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
@@ -928,7 +967,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Image grids')
-      .setDesc('Turn consecutive images into columns. To make a new row, add an extra line break between images.')
+      .setDesc('Turn consecutive images into columns — to make a new row, add an extra line break between images')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.imgGrid)
           .onChange((value) => {
             this.plugin.settings.imgGrid = value;
