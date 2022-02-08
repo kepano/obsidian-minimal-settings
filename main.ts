@@ -423,6 +423,7 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('borders-title', this.settings.bordersTitle);
     document.body.classList.toggle('colorful-headings', this.settings.colorfulHeadings);
     document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
+    document.body.classList.toggle('colorful-active', this.settings.colorfulActiveStates);
     document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
@@ -564,6 +565,7 @@ interface MinimalSettings {
   monoFont: string;
   colorfulHeadings: boolean;
   fancyCursor: boolean;
+  colorfulActiveStates: boolean,
   frostedSidebar: boolean;
   minimalIcons: boolean;
   trimNames: boolean;
@@ -617,6 +619,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   iframeWidth: 'iframe-default-width',
   colorfulHeadings: false,
   minimalIcons: true,
+  colorfulActiveStates: false,
   fancyCursor: true,
   frostedSidebar: true,
   trimNames: true,
@@ -629,7 +632,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   underlineInternal: true,
   underlineExternal: true,
   useSystemTheme: false,
-  folding: false
+  folding: true
 }
 
 class MinimalSettingTab extends PluginSettingTab {
@@ -793,22 +796,32 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
-      .setName('Custom icons')
-      .setDesc('Replace default icons with Minimal set')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
+      .setName('Text labels for primary navigation')
+      .setDesc('Navigation in left sidebar uses text labels (see documentation for localization support)')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.labeledNav)
           .onChange((value) => {
-            this.plugin.settings.minimalIcons = value;
+            this.plugin.settings.labeledNav = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Colorful cursor')
+      .setDesc('Editor cursor uses your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
+          .onChange((value) => {
+            this.plugin.settings.fancyCursor = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
           );
 
     new Setting(containerEl)
-      .setName('Fancy cursor')
-      .setDesc('The editor cursor uses your accent color')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
+      .setName('Colorful active states')
+      .setDesc('Active file and menu items use your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulActiveStates)
           .onChange((value) => {
-            this.plugin.settings.fancyCursor = value;
+            this.plugin.settings.colorfulActiveStates = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
@@ -826,21 +839,11 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
     new Setting(containerEl)
-      .setName('Text labels for primary navigation')
-      .setDesc('Navigation in left sidebar uses text labels (for non-English users this requires a translation snippet available on Github)')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.labeledNav)
+      .setName('Folding offset')
+      .setDesc('Add space for folding icon (recommended if you use collapsible headings and lists)')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.folding)
           .onChange((value) => {
-            this.plugin.settings.labeledNav = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-    new Setting(containerEl)
-      .setName('Trim file names in sidebars')
-      .setDesc('Use ellipses to fit file names on a single line')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimNames)
-          .onChange((value) => {
-            this.plugin.settings.trimNames = value;
+            this.plugin.settings.folding = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
@@ -851,6 +854,16 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalStatus)
           .onChange((value) => {
             this.plugin.settings.minimalStatus = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+    new Setting(containerEl)
+      .setName('Trim file names in sidebars')
+      .setDesc('Use ellipses to fit file names on a single line')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimNames)
+          .onChange((value) => {
+            this.plugin.settings.trimNames = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
@@ -888,7 +901,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Focus mode')
-      .setDesc('Hide UI when a single file is open (UI is accessible on hover)')
+      .setDesc('Hide title bar and status bar (accessible on hover)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
@@ -896,16 +909,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
             })
           );
-
-    new Setting(containerEl)
-      .setName('Folding offset')
-      .setDesc('Recommended if you use folding headings and indents')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.folding)
-          .onChange((value) => {
-            this.plugin.settings.folding = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
 
     new Setting(containerEl)
       .setName('Underline internal links')
@@ -924,6 +927,17 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.underlineExternal)
           .onChange((value) => {
             this.plugin.settings.underlineExternal = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Custom icons')
+      .setDesc('Replace default icons with Minimal set')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
+          .onChange((value) => {
+            this.plugin.settings.minimalIcons = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
@@ -1105,6 +1119,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('iA Writer Quattro S','iA Quattro')
           .addOption('SFMono-Regular','SF Mono')
           .addOption('Consolas','Consolas')
+          .addOption('MonoLisa','MonoLisa')
           .addOption('Roboto Mono','Roboto Mono')
           .setValue(this.plugin.settings.monoFont)
             .onChange((value) => {
@@ -1125,6 +1140,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('iA Writer Quattro S','iA Quattro')
           .addOption('SFMono-Regular','SF Mono')
           .addOption('Consolas','Consolas')
+          .addOption('MonoLisa','MonoLisa')
           .addOption('Roboto Mono','Roboto Mono')
           .setValue(this.plugin.settings.uiFont)
             .onChange((value) => {
@@ -1140,7 +1156,7 @@ class MinimalSettingTab extends PluginSettingTab {
       .addText(text => text.setPlaceholder('16')
         .setValue((this.plugin.settings.textNormal || '') + '')
         .onChange((value) => {
-          this.plugin.settings.textNormal = parseInt(value.trim());
+          this.plugin.settings.textNormal = parseFloat(value);
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
@@ -1151,7 +1167,7 @@ class MinimalSettingTab extends PluginSettingTab {
       .addText(text => text.setPlaceholder('13')
         .setValue((this.plugin.settings.textSmall || '') + '')
         .onChange((value) => {
-          this.plugin.settings.textSmall = parseInt(value.trim());
+          this.plugin.settings.textSmall = parseFloat(value);
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
