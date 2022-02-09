@@ -254,6 +254,17 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-macos-light',
+      name: 'Switch light color scheme to macOS (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-macos-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
       id: 'toggle-minimal-notion-light',
       name: 'Switch light color scheme to Notion (light)',
       callback: () => {
@@ -326,6 +337,18 @@ export default class MinimalTheme extends Plugin {
       name: 'Switch dark color scheme to Gruvbox (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-gruvbox-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+
+  this.addCommand({
+      id: 'toggle-minimal-macos-dark',
+      name: 'Switch light color scheme to macOS (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-macos-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -516,6 +539,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-default-dark',
       'minimal-dracula-dark',
       'minimal-gruvbox-dark',
+      'minimal-macos-dark',
       'minimal-nord-dark',
       'minimal-notion-dark',
       'minimal-solarized-dark',
@@ -528,6 +552,7 @@ export default class MinimalTheme extends Plugin {
     document.body.removeClass(
       'minimal-default-light',
       'minimal-gruvbox-light',
+      'minimal-macos-light',
       'minimal-nord-light',
       'minimal-notion-light',
       'minimal-solarized-light',
@@ -698,6 +723,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-light','Default')
           .addOption('minimal-gruvbox-light','Gruvbox')
+          .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
           .addOption('minimal-notion-light','Notion')
           .addOption('minimal-solarized-light','Solarized')
@@ -731,6 +757,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-default-dark','Default')
           .addOption('minimal-dracula-dark','Dracula')
           .addOption('minimal-gruvbox-dark','Gruvbox')
+          .addOption('minimal-macos-dark','macOS')
           .addOption('minimal-nord-dark','Nord')
           .addOption('minimal-notion-dark','Notion')
           .addOption('minimal-solarized-dark','Solarized')
