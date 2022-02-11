@@ -232,6 +232,17 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-atom-light',
+      name: 'Switch light color scheme to Atom (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-atom-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
       id: 'toggle-minimal-default-light',
       name: 'Switch light color scheme to default (light)',
       callback: () => {
@@ -286,7 +297,6 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-
   this.addCommand({
       id: 'toggle-minimal-solarized-light',
       name: 'Switch light color scheme to Solarized (light)',
@@ -307,6 +317,17 @@ export default class MinimalTheme extends Plugin {
         this.saveData(this.settings);
         this.updateLightScheme();
         this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
+      id: 'toggle-minimal-atom-dark',
+      name: 'Switch color scheme to Atom (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-atom-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
       }
     });
 
@@ -536,6 +557,7 @@ export default class MinimalTheme extends Plugin {
 
   updateDarkScheme() {
     document.body.removeClass(
+      'minimal-atom-dark',
       'minimal-default-dark',
       'minimal-dracula-dark',
       'minimal-gruvbox-dark',
@@ -550,6 +572,7 @@ export default class MinimalTheme extends Plugin {
 
   updateLightScheme() {
     document.body.removeClass(
+      'minimal-atom-light',
       'minimal-default-light',
       'minimal-gruvbox-light',
       'minimal-macos-light',
@@ -722,6 +745,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .setDesc('Preset color options for light mode')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-light','Default')
+          .addOption('minimal-atom-light','Atom')
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
@@ -755,6 +779,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .setDesc('Preset colors options for dark mode')
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-dark','Default')
+          .addOption('minimal-atom-dark','Atom')
           .addOption('minimal-dracula-dark','Dracula')
           .addOption('minimal-gruvbox-dark','Gruvbox')
           .addOption('minimal-macos-dark','macOS')
@@ -856,7 +881,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Colorful headings')
-      .setDesc('Use different colors for each heading')
+      .setDesc('Headings use a different color for each size')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulHeadings)
           .onChange((value) => {
             this.plugin.settings.colorfulHeadings = value;
@@ -908,7 +933,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Sidebar borders')
-        .setDesc('Display borders between sidebar elements')
+        .setDesc('Display divider lines between sidebar elements')
         .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersToggle)
           .onChange((value) => {
             this.plugin.settings.bordersToggle = value;
@@ -928,7 +953,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Focus mode')
-      .setDesc('Hide title bar and status bar (accessible on hover)')
+      .setDesc('Hide title bar and status bar, hover to display (can be toggled with hotkey)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
