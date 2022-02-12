@@ -15,7 +15,7 @@ export default class MinimalTheme extends Plugin {
 
   let media = window.matchMedia('(prefers-color-scheme: dark)');
 
-  let callback = () => {
+  let updateSystemTheme = () => {
     if (media.matches && this.settings.useSystemTheme) {
       console.log('Dark mode active');
       this.updateDarkStyle()
@@ -25,13 +25,34 @@ export default class MinimalTheme extends Plugin {
       this.updateLightStyle()
     }
   }
-  media.addEventListener('change', callback);
+  media.addEventListener('change', updateSystemTheme);
 
-  // Remove listener when we unload
+  // Remove system theme listener when we unload
 
-  this.register(() => media.removeEventListener('change', callback));
+  this.register(() => media.removeEventListener('change', updateSystemTheme));
 
-  callback();
+  updateSystemTheme();
+
+  // Check folding toggle state
+
+  let updateFoldSetting = () => {
+    // @ts-ignore
+    if (this.app.vault.getConfig('foldHeading')) {
+      this.settings.folding = true;
+      this.saveData(this.settings);
+      console.log('Folding is on');
+    } else {
+      this.settings.folding = false;
+      this.saveData(this.settings);
+      console.log('Folding is off');
+    }
+    document.body.classList.toggle('minimal-folding', this.settings.folding);
+  }
+  
+  // @ts-ignore
+  this.registerEvent(app.vault.on('config-changed', updateFoldSetting));
+
+  updateFoldSetting();
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
@@ -889,16 +910,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
             })
           );
-
-    new Setting(containerEl)
-      .setName('Folding offset')
-      .setDesc('Add space for folding icon (recommended if you use collapsible headings and lists)')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.folding)
-          .onChange((value) => {
-            this.plugin.settings.folding = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
 
     new Setting(containerEl)
       .setName('Minimal status bar')
