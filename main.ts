@@ -522,10 +522,6 @@ export default class MinimalTheme extends Plugin {
           --line-width-wide:${this.settings.lineWidthWide}rem;
           --max-width:${this.settings.maxWidth}%;
           --max-col-width:${this.settings.maxColWidth};
-          --text:${this.settings.textFont};
-          --text-editor:${this.settings.editorFont};
-          --font-ui:${this.settings.uiFont};
-          --font-monospace:${this.settings.monoFont};
           --accent-h:${this.settings.accentHue};
           --accent-s:${this.settings.accentSat}%;}
       `;
