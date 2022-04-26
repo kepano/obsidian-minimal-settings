@@ -624,10 +624,6 @@ interface MinimalSettings {
   darkStyle: string;
   lightScheme: string;
   darkScheme: string;
-  uiFont: string;
-  textFont: string;
-  editorFont: string;
-  monoFont: string;
   colorfulHeadings: boolean;
   fancyCursor: boolean;
   colorfulActiveStates: boolean,
@@ -666,10 +662,6 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
   darkScheme: 'minimal-default-dark',
-  uiFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  textFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  editorFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  monoFont: 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace',
   lineHeight: 1.5,
   lineWidth: 40,
   lineWidthWide: 50,
@@ -1127,87 +1119,8 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('h3', {text: 'Typography'});
 
       new Setting(containerEl)
-        .setName('Text font')
-        .setDesc('Used in preview mode — the font must also be installed on your system')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Inter','Inter')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.textFont)
-            .onChange((value) => {
-              this.plugin.settings.textFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('Editor font')
-        .setDesc('Used in edit mode')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Inter','Inter')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.editorFont)
-            .onChange((value) => {
-              this.plugin.settings.editorFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('Monospace font')
-        .setDesc('Used for code blocks and front matter')
-        .addDropdown(dropdown => dropdown
-          .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('MonoLisa','MonoLisa')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.monoFont)
-            .onChange((value) => {
-              this.plugin.settings.monoFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('UI font')
-        .setDesc('Used for the user interface including buttons, menus and sidebar')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('MonoLisa','MonoLisa')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.uiFont)
-            .onChange((value) => {
-              this.plugin.settings.uiFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
+        .setName('Readin mode / editor / monospace / UI font')
+        .setDesc('Go to Appearance > Fonts to set custom fonts')
 
     new Setting(containerEl)
       .setName('Body font size')
@@ -1278,51 +1191,7 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('br');
     containerEl.createEl('h3');
     containerEl.createEl('h3', {text: 'Custom fonts'});
-    containerEl.createEl('p', {text: 'Overrides the dropdowns above. Use the exact name of the font as it appears on your system.'});
-
-    new Setting(containerEl)
-      .setName('Custom text font')
-      .setDesc('Used in preview mode')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.textFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.textFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('Custom editor font')
-      .setDesc('Used in edit mode')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.editorFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.editorFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('Custom monospace font')
-      .setDesc('Used for code blocks, front matter, etc')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.monoFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.monoFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('Custom UI font')
-      .setDesc('Used for UI elements')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.uiFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.uiFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
+    containerEl.createEl('p', {text: 'Go to Appearance > Fonts to add custom fonts'});
 
     containerEl.createEl('br');
     containerEl.createEl('h3', {text: 'Support development'});
