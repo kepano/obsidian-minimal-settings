@@ -9,3 +9,4 @@ package-lock.json
 # build
 data.json
 *.js.map
+main.js
