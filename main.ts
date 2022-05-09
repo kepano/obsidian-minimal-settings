@@ -69,6 +69,7 @@ export default class MinimalTheme extends Plugin {
       console.log('Readable line length is off');
     }
     document.body.classList.toggle('minimal-readable', this.settings.readableLineLength);
+    document.body.classList.toggle('minimal-readable-off', !this.settings.readableLineLength);
   }
   
   // @ts-ignore
