@@ -33,9 +33,9 @@ export default class MinimalTheme extends Plugin {
 
   updateSystemTheme();
 
-  // Check folding toggle state
+  // Check state of Obsidian Settings
 
-  let updateFoldSetting = () => {
+  let settingsUpdate = () => {
     // @ts-ignore
     if (this.app.vault.getConfig('foldHeading')) {
       this.settings.folding = true;
@@ -47,12 +47,34 @@ export default class MinimalTheme extends Plugin {
       console.log('Folding is off');
     }
     document.body.classList.toggle('minimal-folding', this.settings.folding);
+    // @ts-ignore
+    if (this.app.vault.getConfig('showLineNumber')) {
+      this.settings.lineNumbers = true;
+      this.saveData(this.settings);
+      console.log('Line numbers are on');
+    } else {
+      this.settings.lineNumbers = false;
+      this.saveData(this.settings);
+      console.log('Line numbers are off');
+    }
+    document.body.classList.toggle('minimal-line-nums', this.settings.lineNumbers);
+    // @ts-ignore
+    if (this.app.vault.getConfig('readableLineLength')) {
+      this.settings.readableLineLength = true;
+      this.saveData(this.settings);
+      console.log('Readable line length is on');
+    } else {
+      this.settings.readableLineLength = false;
+      this.saveData(this.settings);
+      console.log('Readable line length is off');
+    }
+    document.body.classList.toggle('minimal-readable', this.settings.readableLineLength);
   }
   
   // @ts-ignore
-  this.registerEvent(app.vault.on('config-changed', updateFoldSetting));
+  this.registerEvent(app.vault.on('config-changed', settingsUpdate));
 
-  updateFoldSetting();
+  settingsUpdate();
 
   const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
   const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
@@ -513,22 +535,21 @@ export default class MinimalTheme extends Plugin {
     if (!el) throw "minimal-theme element not found!";
     else {
       // set the settings-dependent css
-      el.innerText = `
-        body.minimal-theme{
-          --font-normal:${this.settings.textNormal}px;
-          --font-small:${this.settings.textSmall}px;
-          --line-height:${this.settings.lineHeight};
-          --line-width:${this.settings.lineWidth}rem;
-          --line-width-wide:${this.settings.lineWidthWide}rem;
-          --max-width:${this.settings.maxWidth}%;
-          --max-col-width:${this.settings.maxColWidth};
-          --text:${this.settings.textFont};
-          --text-editor:${this.settings.editorFont};
-          --font-ui:${this.settings.uiFont};
-          --font-monospace:${this.settings.monoFont};
-          --accent-h:${this.settings.accentHue};
-          --accent-s:${this.settings.accentSat}%;}
-      `;
+      el.innerText = 
+        'body.minimal-theme{'
+        + '--font-normal:' + this.settings.textNormal + 'px;'
+        + '--font-small:' + this.settings.textSmall + 'px;'
+        + '--line-height:' + this.settings.lineHeight + ';'
+        + '--line-width:' + this.settings.lineWidth + 'rem;'
+        + '--line-width-wide:' + this.settings.lineWidthWide + 'rem;'
+        + '--max-width:' + this.settings.maxWidth + '%;'
+        + '--max-col-width:' + this.settings.maxColWidth + ';'
+        + '--text:' + this.settings.textFont + ';'
+        + '--text-editor:' + this.settings.editorFont + ';'
+        + '--font-ui:' + this.settings.uiFont + ';'
+        + '--font-monospace:' + this.settings.monoFont + ';'
+        + '--accent-h:' + this.settings.accentHue + ';'
+        + '--accent-s:' + this.settings.accentSat + '%;}';
     }
   }
 
@@ -660,6 +681,8 @@ interface MinimalSettings {
   underlineExternal: boolean;
   useSystemTheme: boolean;
   folding: boolean;
+  lineNumbers: boolean;
+  readableLineLength: boolean;
 }
 
 const DEFAULT_SETTINGS: MinimalSettings = {
@@ -689,7 +712,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   colorfulHeadings: false,
   minimalIcons: true,
   colorfulActiveStates: false,
-  fancyCursor: true,
+  fancyCursor: false,
   frostedSidebar: true,
   trimNames: true,
   labeledNav: false,
@@ -701,7 +724,9 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   underlineInternal: true,
   underlineExternal: true,
   useSystemTheme: false,
-  folding: true
+  folding: true,
+  lineNumbers: false,
+  readableLineLength: false
 }
 
 class MinimalSettingTab extends PluginSettingTab {
@@ -1130,89 +1155,6 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('h3');
     containerEl.createEl('h3', {text: 'Typography'});
 
-      new Setting(containerEl)
-        .setName('Text font')
-        .setDesc('Used in preview mode — the font must also be installed on your system')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Inter','Inter')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.textFont)
-            .onChange((value) => {
-              this.plugin.settings.textFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('Editor font')
-        .setDesc('Used in edit mode')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Inter','Inter')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.editorFont)
-            .onChange((value) => {
-              this.plugin.settings.editorFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('Monospace font')
-        .setDesc('Used for code blocks and front matter')
-        .addDropdown(dropdown => dropdown
-          .addOption('Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace','System font')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('MonoLisa','MonoLisa')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.monoFont)
-            .onChange((value) => {
-              this.plugin.settings.monoFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
-      new Setting(containerEl)
-        .setName('UI font')
-        .setDesc('Used for the user interface including buttons, menus and sidebar')
-        .addDropdown(dropdown => dropdown
-          .addOption('-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif','System font')
-          .addOption('Avenir','Avenir')
-          .addOption('iA Writer Mono S','iA Mono')
-          .addOption('iA Writer Duo S','iA Duo')
-          .addOption('iA Writer Quattro S','iA Quattro')
-          .addOption('SFMono-Regular','SF Mono')
-          .addOption('Consolas','Consolas')
-          .addOption('MonoLisa','MonoLisa')
-          .addOption('Roboto Mono','Roboto Mono')
-          .setValue(this.plugin.settings.uiFont)
-            .onChange((value) => {
-              this.plugin.settings.uiFont = value;
-              this.plugin.saveData(this.plugin.settings);
-              this.plugin.refresh();
-            })
-          );
-
     new Setting(containerEl)
       .setName('Body font size')
       .setDesc('Used for the main text (default 16)')
@@ -1282,10 +1224,10 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('br');
     containerEl.createEl('h3');
     containerEl.createEl('h3', {text: 'Custom fonts'});
-    containerEl.createEl('p', {text: 'Overrides the dropdowns above. Use the exact name of the font as it appears on your system.'});
+    containerEl.createEl('p', {text: 'Use the exact name of the font as it appears on your system. Note these settings will soon be deprecated in favor of the new Obsidian Appearance settings.'});
 
     new Setting(containerEl)
-      .setName('Custom text font')
+      .setName('Text font')
       .setDesc('Used in preview mode')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.textFont || '') + '')
@@ -1296,7 +1238,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Custom editor font')
+      .setName('Editor font')
       .setDesc('Used in edit mode')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.editorFont || '') + '')
@@ -1307,7 +1249,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Custom monospace font')
+      .setName('Monospace font')
       .setDesc('Used for code blocks, front matter, etc')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.monoFont || '') + '')
@@ -1318,7 +1260,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Custom UI font')
+      .setName('UI font')
       .setDesc('Used for UI elements')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.uiFont || '') + '')
