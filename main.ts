@@ -37,6 +37,10 @@ export default class MinimalTheme extends Plugin {
 
   let settingsUpdate = () => {
     // @ts-ignore
+    const fontSize = this.app.vault.getConfig('baseFontSize');
+    this.settings.textNormal = fontSize;
+
+    // @ts-ignore
     if (this.app.vault.getConfig('foldHeading')) {
       this.settings.folding = true;
       this.saveData(this.settings);
@@ -91,9 +95,9 @@ export default class MinimalTheme extends Plugin {
       callback: () => {
         this.settings.textNormal = this.settings.textNormal + 0.5;
         this.saveData(this.settings);
-        this.refresh();
+        this.setFontSize();
       }
-    });  
+    });
 
   this.addCommand({
       id: 'decrease-body-font-size',
@@ -101,7 +105,7 @@ export default class MinimalTheme extends Plugin {
       callback: () => {
         this.settings.textNormal = this.settings.textNormal - 0.5;
         this.saveData(this.settings);
-        this.refresh();
+        this.setFontSize();
       }
     }); 
 
@@ -500,6 +504,13 @@ export default class MinimalTheme extends Plugin {
     this.updateStyle();
   }
 
+  setFontSize() {
+    // @ts-ignore
+    this.app.vault.setConfig('baseFontSize', this.settings.textNormal);
+    // @ts-ignore
+    this.app.updateFontSize();
+  }
+
   // update the styles (at the start, or as the result of a settings change)
   updateStyle() {
     this.removeStyle();
@@ -538,6 +549,7 @@ export default class MinimalTheme extends Plugin {
       // set the settings-dependent css
       el.innerText = 
         'body.minimal-theme{'
+        // font-normal can be removed in a couple months once people upgrade the theme
         + '--font-normal:' + this.settings.textNormal + 'px;'
         + '--font-small:' + this.settings.textSmall + 'px;'
         + '--line-height:' + this.settings.lineHeight + ';'
@@ -1164,7 +1176,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .onChange((value) => {
           this.plugin.settings.textNormal = parseFloat(value);
           this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
+          this.plugin.setFontSize();
         }));
 
     new Setting(containerEl)
