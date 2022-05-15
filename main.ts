@@ -468,6 +468,16 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
+    this.addCommand({
+      id: 'toggle-minimal-dev-block-width',
+      name: 'Dev — Show block widths',
+      callback: () => {
+        this.settings.devBlockWidth = !this.settings.devBlockWidth;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
   this.refresh()
 
 }
@@ -529,6 +539,7 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
     document.body.classList.toggle('full-width-media', this.settings.fullWidthMedia);
     document.body.classList.toggle('img-grid', this.settings.imgGrid);
+    document.body.classList.toggle('minimal-dev-block-width', this.settings.devBlockWidth);
     document.body.classList.toggle('minimal-status-off', !this.settings.minimalStatus);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
@@ -683,6 +694,7 @@ interface MinimalSettings {
   trimCols: boolean;
   maxColWidth: string;
   imgGrid: boolean;
+  devBlockWidth: boolean;
   tableWidth: string;
   iframeWidth: string;
   imgWidth: string;
@@ -739,7 +751,8 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   useSystemTheme: false,
   folding: true,
   lineNumbers: false,
-  readableLineLength: false
+  readableLineLength: false,
+  devBlockWidth: false,
 }
 
 class MinimalSettingTab extends PluginSettingTab {
