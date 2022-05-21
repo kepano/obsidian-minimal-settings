@@ -313,6 +313,17 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-everforest-light',
+      name: 'Switch light color scheme to Everforest (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-everforest-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+  this.addCommand({
       id: 'toggle-minimal-macos-light',
       name: 'Switch light color scheme to macOS (light)',
       callback: () => {
@@ -412,6 +423,16 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
+  this.addCommand({
+      id: 'toggle-minimal-everforest-dark',
+      name: 'Switch dark color scheme to Everforest (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-everforest-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
 
   this.addCommand({
       id: 'toggle-minimal-macos-dark',
@@ -626,6 +647,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-atom-dark',
       'minimal-default-dark',
       'minimal-dracula-dark',
+      'minimal-everforest-dark',
       'minimal-gruvbox-dark',
       'minimal-macos-dark',
       'minimal-nord-dark',
@@ -640,6 +662,7 @@ export default class MinimalTheme extends Plugin {
     document.body.removeClass(
       'minimal-atom-light',
       'minimal-default-light',
+      'minimal-everforest-light',
       'minimal-gruvbox-light',
       'minimal-macos-light',
       'minimal-nord-light',
@@ -818,6 +841,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-light','Default')
           .addOption('minimal-atom-light','Atom')
+          .addOption('minimal-everforest-light','Everforest')
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
@@ -853,6 +877,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-default-dark','Default')
           .addOption('minimal-atom-dark','Atom')
           .addOption('minimal-dracula-dark','Dracula')
+          .addOption('minimal-everforest-dark','Everforest')
           .addOption('minimal-gruvbox-dark','Gruvbox')
           .addOption('minimal-macos-dark','macOS')
           .addOption('minimal-nord-dark','Nord')
