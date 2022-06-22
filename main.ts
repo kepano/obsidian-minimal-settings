@@ -87,6 +87,8 @@ export default class MinimalTheme extends Plugin {
   const tableWidthStyles = ['table-100','table-default-width','table-wide','table-max'];
   const iframeWidthStyles = ['iframe-100','iframe-default-width','iframe-wide','iframe-max'];
   const imgWidthStyles = ['img-100','img-default-width','img-wide','img-max'];
+  const mapWidthStyles = ['map-100','map-default-width','map-wide','map-max'];
+  const chartWidthStyles = ['chart-100','chart-default-width','chart-wide','chart-max'];
   const theme = ['moonstone', 'obsidian'];
 
   this.addCommand({
@@ -189,6 +191,27 @@ export default class MinimalTheme extends Plugin {
         this.refresh();
       }
     });
+
+  this.addCommand({
+      id: 'cycle-minimal-chart-width',
+      name: 'Cycle between chart width options',
+      callback: () => {
+        this.settings.chartWidth = chartWidthStyles[(chartWidthStyles.indexOf(this.settings.chartWidth) + 1) % chartWidthStyles.length];
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
+      id: 'cycle-minimal-map-width',
+      name: 'Cycle between map width options',
+      callback: () => {
+        this.settings.mapWidth = mapWidthStyles[(mapWidthStyles.indexOf(this.settings.mapWidth) + 1) % mapWidthStyles.length];
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
   this.addCommand({
       id: 'toggle-minimal-img-grid',
       name: 'Toggle image grids',
@@ -569,10 +592,16 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('frosted-sidebar', this.settings.frostedSidebar);
 
-    document.body.removeClass('table-wide','table-max','table-100','table-default-width','iframe-wide','iframe-max','iframe-100','iframe-default-width','img-wide','img-max','img-100','img-default-width');
+    document.body.removeClass('table-wide','table-max','table-100','table-default-width',
+      'iframe-wide','iframe-max','iframe-100','iframe-default-width',
+      'img-wide','img-max','img-100','img-default-width',
+      'chart-wide','chart-max','chart-100','chart-default-width',
+      'map-wide','map-max','map-100','map-default-width');
+    document.body.addClass(this.settings.chartWidth);
     document.body.addClass(this.settings.tableWidth);
     document.body.addClass(this.settings.imgWidth);
     document.body.addClass(this.settings.iframeWidth);
+    document.body.addClass(this.settings.mapWidth);
 
     // get the custom css element
     const el = document.getElementById('minimal-theme');
@@ -589,10 +618,7 @@ export default class MinimalTheme extends Plugin {
         + '--line-width-wide:' + this.settings.lineWidthWide + 'rem;'
         + '--max-width:' + this.settings.maxWidth + '%;'
         + '--max-col-width:' + this.settings.maxColWidth + ';'
-        + '--text:' + this.settings.textFont + ';'
-        + '--text-editor:' + this.settings.editorFont + ';'
-        + '--font-ui:' + this.settings.uiFont + ';'
-        + '--font-monospace:' + this.settings.monoFont + ';'
+        + '--font-editor-override:' + this.settings.editorFont + ';'
         + '--accent-h:' + this.settings.accentHue + ';'
         + '--accent-s:' + this.settings.accentSat + '%;}';
     }
@@ -721,6 +747,8 @@ interface MinimalSettings {
   tableWidth: string;
   iframeWidth: string;
   imgWidth: string;
+  chartWidth: string;
+  mapWidth: string;
   fullWidthMedia: boolean,
   minimalStatus: boolean,
   textNormal: number;
@@ -741,10 +769,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
   darkScheme: 'minimal-default-dark',
-  uiFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  textFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  editorFont: '-apple-system,BlinkMacSystemFont,"Segoe UI Emoji","Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,sans-serif',
-  monoFont: 'Menlo,SFMono-Regular,Consolas,Roboto Mono,monospace',
+  editorFont: '',
   lineHeight: 1.5,
   lineWidth: 40,
   lineWidthWide: 50,
@@ -757,6 +782,8 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   imgWidth: 'img-default-width',
   tableWidth: 'table-default-width',
   iframeWidth: 'iframe-default-width',
+  mapWidth: 'map-default-width',
+  chartWidth: 'chart-default-width',
   colorfulHeadings: false,
   minimalIcons: true,
   colorfulActiveStates: false,
@@ -799,7 +826,7 @@ class MinimalSettingTab extends PluginSettingTab {
       mainDesc.appendChild(
         createEl('a', {
           text: "Minimal documentation",
-          href: "https://github.com/kepano/obsidian-minimal/blob/master/README.md",
+          href: "https://minimal.guide",
         })
       );
       mainDesc.appendText(' or visit the ');
@@ -1113,7 +1140,7 @@ class MinimalSettingTab extends PluginSettingTab {
       layoutDesc.appendChild(
         createEl('a', {
           text: "see documentation",
-          href: "https://github.com/kepano/obsidian-minimal/blob/master/README.md#helper-filters-and-classes",
+          href: "https://minimal.guide/Features/Block+width",
         })
       );
       layoutDesc.appendText(' for details.');
@@ -1129,8 +1156,40 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     new Setting(containerEl)
+      .setName('Chart width')
+      .setDesc('Default width for chart blocks')
+      .addDropdown(dropdown => dropdown
+        .addOption('chart-default-width','Default')
+        .addOption('chart-wide','Wide line width')
+        .addOption('chart-max','Maximum line width')
+        .addOption('chart-100','100% pane width')
+        .setValue(this.plugin.settings.chartWidth)
+          .onChange((value) => {
+            this.plugin.settings.chartWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
+
+    new Setting(containerEl)
+      .setName('Iframe width')
+      .setDesc('Default width for iframe blocks')
+      .addDropdown(dropdown => dropdown
+        .addOption('iframe-default-width','Default')
+        .addOption('iframe-wide','Wide line width')
+        .addOption('iframe-max','Maximum line width')
+        .addOption('iframe-100','100% pane width')
+        .setValue(this.plugin.settings.iframeWidth)
+          .onChange((value) => {
+            this.plugin.settings.iframeWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
+
+    new Setting(containerEl)
       .setName('Image width')
-      .setDesc('Default width for images and image grids')
+      .setDesc('Default width for image blocks')
       .addDropdown(dropdown => dropdown
         .addOption('img-default-width','Default')
         .addOption('img-wide','Wide line width')
@@ -1145,8 +1204,24 @@ class MinimalSettingTab extends PluginSettingTab {
         );
 
     new Setting(containerEl)
+      .setName('Map width')
+      .setDesc('Default width for map blocks')
+      .addDropdown(dropdown => dropdown
+        .addOption('map-default-width','Default')
+        .addOption('map-wide','Wide line width')
+        .addOption('map-max','Maximum line width')
+        .addOption('map-100','100% pane width')
+        .setValue(this.plugin.settings.mapWidth)
+          .onChange((value) => {
+            this.plugin.settings.mapWidth = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          })
+        );
+
+    new Setting(containerEl)
       .setName('Table width')
-      .setDesc('Default width for table and Dataview elements')
+      .setDesc('Default width for table and Dataview blocks')
       .addDropdown(dropdown => dropdown
         .addOption('table-default-width','Default')
         .addOption('table-wide','Wide line width')
@@ -1155,22 +1230,6 @@ class MinimalSettingTab extends PluginSettingTab {
         .setValue(this.plugin.settings.tableWidth)
           .onChange((value) => {
             this.plugin.settings.tableWidth = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          })
-        );
-
-    new Setting(containerEl)
-      .setName('Iframe width')
-      .setDesc('Default width for iframe elements')
-      .addDropdown(dropdown => dropdown
-        .addOption('iframe-default-width','Default')
-        .addOption('iframe-wide','Wide line width')
-        .addOption('iframe-max','Maximum line width')
-        .addOption('iframe-100','100% pane width')
-        .setValue(this.plugin.settings.iframeWidth)
-          .onChange((value) => {
-            this.plugin.settings.iframeWidth = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           })
@@ -1240,7 +1299,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Normal line width')
+      .setName('Normal line length')
       .setDesc('Number of characters per line (default 40)')
       .addText(text => text.setPlaceholder('40')
         .setValue((this.plugin.settings.lineWidth || '') + '')
@@ -1251,7 +1310,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Wide line width')
+      .setName('Wide line length')
       .setDesc('Number of characters per line for wide elements (default 50)')
       .addText(text => text.setPlaceholder('50')
         .setValue((this.plugin.settings.lineWidthWide || '') + '')
@@ -1262,8 +1321,8 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Maximum line width %')
-      .setDesc('Percentage of space inside a pane that a line can fill. (default 88)')
+      .setName('Maximum line length %')
+      .setDesc('Percentage of space inside a pane that a line can fill (default 88)')
       .addText(text => text.setPlaceholder('88')
         .setValue((this.plugin.settings.maxWidth || '') + '')
         .onChange((value) => {
@@ -1274,49 +1333,16 @@ class MinimalSettingTab extends PluginSettingTab {
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Custom fonts'});
-    containerEl.createEl('p', {text: 'Use the exact name of the font as it appears on your system. Note these settings will soon be deprecated in favor of the new Obsidian Appearance settings.'});
-
-    new Setting(containerEl)
-      .setName('Text font')
-      .setDesc('Used in preview mode')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.textFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.textFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
+    containerEl.createEl('h3', {text: 'Editor font'});
+    containerEl.createEl('p', {text: 'Overrides the text font defined in Obsidian Appearance settings when in edit mode'});
 
     new Setting(containerEl)
       .setName('Editor font')
-      .setDesc('Used in edit mode')
+      .setDesc('Use the exact name of the font as it appears on your system')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.editorFont || '') + '')
         .onChange((value) => {
           this.plugin.settings.editorFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('Monospace font')
-      .setDesc('Used for code blocks, front matter, etc')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.monoFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.monoFont = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
-
-    new Setting(containerEl)
-      .setName('UI font')
-      .setDesc('Used for UI elements')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.uiFont || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.uiFont = value;
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
