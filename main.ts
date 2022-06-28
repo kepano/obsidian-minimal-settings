@@ -645,7 +645,9 @@ export default class MinimalTheme extends Plugin {
       'minimal-dark-black'
     );
     document.body.addClass(this.settings.darkStyle);
-    document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark');
+
+    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+    if (sidebarEl) sidebarEl.removeClass('theme-dark');
     // @ts-ignore
     this.app.setTheme('obsidian');
     // @ts-ignore
@@ -662,10 +664,12 @@ export default class MinimalTheme extends Plugin {
       'minimal-light-white'
     );
     document.body.addClass(this.settings.lightStyle);
-    if (this.settings.lightStyle == 'minimal-light-contrast') {
-      document.getElementsByClassName('mod-left-split')[0].addClass('theme-dark');
-    } else {
-      document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark'); 
+
+    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+    if (sidebarEl && this.settings.lightStyle == 'minimal-light-contrast') {
+      sidebarEl.addClass('theme-dark');
+    } else if (sidebarEl) {
+      sidebarEl.removeClass('theme-dark'); 
     }
     // @ts-ignore
     this.app.setTheme('moonstone');
@@ -711,12 +715,15 @@ export default class MinimalTheme extends Plugin {
     // @ts-ignore
     this.app.vault.setConfig('theme', this.settings.theme);
     this.app.workspace.trigger('css-change');
-    if (this.settings.theme == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
-      document.getElementsByClassName('mod-left-split')[0].addClass('theme-dark');
-    } else {
-      document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark'); 
+
+    if (sidebarEl && this.settings.theme == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
+      sidebarEl.addClass('theme-dark');
+    } else if (sidebarEl) {
+      sidebarEl.removeClass('theme-dark'); 
     }
   }
+
+
 
   removeStyle() {
     document.body.removeClass('minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white','minimal-dark','minimal-dark-tonal','minimal-dark-black');
