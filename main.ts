@@ -645,6 +645,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-dark-black'
     );
     document.body.addClass(this.settings.darkStyle);
+    document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark');
     // @ts-ignore
     this.app.setTheme('obsidian');
     // @ts-ignore
@@ -661,6 +662,11 @@ export default class MinimalTheme extends Plugin {
       'minimal-light-white'
     );
     document.body.addClass(this.settings.lightStyle);
+    if (this.settings.lightStyle == 'minimal-light-contrast') {
+      document.getElementsByClassName('mod-left-split')[0].addClass('theme-dark');
+    } else {
+      document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark'); 
+    }
     // @ts-ignore
     this.app.setTheme('moonstone');
     // @ts-ignore
@@ -705,6 +711,11 @@ export default class MinimalTheme extends Plugin {
     // @ts-ignore
     this.app.vault.setConfig('theme', this.settings.theme);
     this.app.workspace.trigger('css-change');
+    if (this.settings.theme == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
+      document.getElementsByClassName('mod-left-split')[0].addClass('theme-dark');
+    } else {
+      document.getElementsByClassName('mod-left-split')[0].removeClass('theme-dark'); 
+    }
   }
 
   removeStyle() {
