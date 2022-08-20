@@ -573,9 +573,7 @@ export default class MinimalTheme extends Plugin {
     document.body.addClass(this.settings.lightScheme);
 
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
-    document.body.classList.toggle('borders-title', this.settings.bordersTitle);
     document.body.classList.toggle('colorful-headings', this.settings.colorfulHeadings);
-    document.body.classList.toggle('fancy-cursor', this.settings.fancyCursor);
     document.body.classList.toggle('colorful-active', this.settings.colorfulActiveStates);
     document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
@@ -587,8 +585,6 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('minimal-status-off', !this.settings.minimalStatus);
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
-    document.body.classList.toggle('trim-cols', this.settings.trimCols);
-    document.body.classList.toggle('minimal-icons-off', !this.settings.minimalIcons);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
     document.body.classList.toggle('frosted-sidebar', this.settings.frostedSidebar);
 
@@ -617,7 +613,6 @@ export default class MinimalTheme extends Plugin {
         + '--line-width:' + this.settings.lineWidth + 'rem;'
         + '--line-width-wide:' + this.settings.lineWidthWide + 'rem;'
         + '--max-width:' + this.settings.maxWidth + '%;'
-        + '--max-col-width:' + this.settings.maxColWidth + ';'
         + '--font-editor-override:' + this.settings.editorFont + ';'
         + '--accent-h:' + this.settings.accentHue + ';'
         + '--accent-s:' + this.settings.accentSat + '%;}';
@@ -740,19 +735,13 @@ interface MinimalSettings {
   darkStyle: string;
   lightScheme: string;
   darkScheme: string;
-  uiFont: string;
-  textFont: string;
   editorFont: string;
-  monoFont: string;
   colorfulHeadings: boolean;
-  fancyCursor: boolean;
   colorfulActiveStates: boolean,
   frostedSidebar: boolean;
-  minimalIcons: boolean;
   trimNames: boolean;
   labeledNav: boolean;
   bordersToggle: boolean;
-  bordersTitle: boolean;
   focusMode: boolean;
   lineHeight: number;
   lineWidth: number;
@@ -792,8 +781,6 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   lineWidth: 40,
   lineWidthWide: 50,
   maxWidth: 88,
-  trimCols: true,
-  maxColWidth: '18em',
   textNormal: 16,
   textSmall: 13,
   imgGrid: false,
@@ -805,13 +792,11 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   colorfulHeadings: false,
   minimalIcons: true,
   colorfulActiveStates: false,
-  fancyCursor: false,
   frostedSidebar: true,
   trimNames: true,
   labeledNav: false,
   fullWidthMedia: true,
   bordersToggle: true,
-  bordersTitle: false,
   minimalStatus: true,
   focusMode: false,
   underlineInternal: true,
@@ -1000,17 +985,6 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     new Setting(containerEl)
-      .setName('Colorful cursor')
-      .setDesc('Editor cursor uses your accent color')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.fancyCursor)
-          .onChange((value) => {
-            this.plugin.settings.fancyCursor = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-            })
-          );
-
-    new Setting(containerEl)
       .setName('Colorful active states')
       .setDesc('Active file and menu items use your accent color')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulActiveStates)
@@ -1064,21 +1038,11 @@ class MinimalSettingTab extends PluginSettingTab {
           );
 
       new Setting(containerEl)
-        .setName('Sidebar borders')
-        .setDesc('Display divider lines between sidebar elements')
+        .setName('Workspace borders')
+        .setDesc('Display divider lines between workspace elements')
         .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersToggle)
           .onChange((value) => {
             this.plugin.settings.bordersToggle = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-      new Setting(containerEl)
-        .setName('Title bar border')
-        .setDesc('Display border below pane title (if borders are not hidden)')
-        .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersTitle)
-          .onChange((value) => {
-            this.plugin.settings.bordersTitle = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
@@ -1111,17 +1075,6 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.underlineExternal)
           .onChange((value) => {
             this.plugin.settings.underlineExternal = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-            })
-          );
-
-    new Setting(containerEl)
-      .setName('Custom icons')
-      .setDesc('Replace default icons with Minimal set')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.minimalIcons)
-          .onChange((value) => {
-            this.plugin.settings.minimalIcons = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
@@ -1252,32 +1205,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.refresh();
           })
         );
-
-    containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Tables'});
-
-    new Setting(containerEl)
-      .setName('Trim Dataview columns')
-      .setDesc('Disables word wrapping in table cells, and trims long text')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.trimCols)
-          .onChange((value) => {
-            this.plugin.settings.trimCols = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-            })
-          );
-
-    new Setting(containerEl)
-      .setName('Dataview maximum column width')
-      .setDesc('Maximum width for Dataview columns, accepts any CSS width value')
-      .addText(text => text.setPlaceholder('')
-        .setValue((this.plugin.settings.maxColWidth || '') + '')
-        .onChange((value) => {
-          this.plugin.settings.maxColWidth = value;
-          this.plugin.saveData(this.plugin.settings);
-          this.plugin.refresh();
-        }));
 
     containerEl.createEl('br');
     containerEl.createEl('h3');
