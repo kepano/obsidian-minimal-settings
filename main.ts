@@ -574,6 +574,7 @@ export default class MinimalTheme extends Plugin {
 
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
     document.body.classList.toggle('colorful-headings', this.settings.colorfulHeadings);
+    document.body.classList.toggle('colorful-frame', this.settings.colorfulFrame);
     document.body.classList.toggle('colorful-active', this.settings.colorfulActiveStates);
     document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
