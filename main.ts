@@ -606,16 +606,12 @@ export default class MinimalTheme extends Plugin {
       // set the settings-dependent css
       el.innerText = 
         'body.minimal-theme{'
-        // font-normal can be removed in a couple months once people upgrade the theme
-        + '--font-normal:' + this.settings.textNormal + 'px;'
-        + '--font-small:' + this.settings.textSmall + 'px;'
+        + '--font-ui-small:' + this.settings.textSmall + 'px;'
         + '--line-height:' + this.settings.lineHeight + ';'
         + '--line-width:' + this.settings.lineWidth + 'rem;'
         + '--line-width-wide:' + this.settings.lineWidthWide + 'rem;'
         + '--max-width:' + this.settings.maxWidth + '%;'
-        + '--font-editor-override:' + this.settings.editorFont + ';'
-        + '--accent-h:' + this.settings.accentHue + ';'
-        + '--accent-s:' + this.settings.accentSat + '%;}';
+        + '--font-editor-override:' + this.settings.editorFont + ';';
     }
   }
 
@@ -729,14 +725,13 @@ export default class MinimalTheme extends Plugin {
 
 interface MinimalSettings {
   theme: string;
-  accentHue: number;
-  accentSat: number;
   lightStyle: string;
   darkStyle: string;
   lightScheme: string;
   darkScheme: string;
   editorFont: string;
   colorfulHeadings: boolean;
+  colorfulFrame: boolean;
   colorfulActiveStates: boolean,
   frostedSidebar: boolean;
   trimNames: boolean;
@@ -770,8 +765,6 @@ interface MinimalSettings {
 
 const DEFAULT_SETTINGS: MinimalSettings = {
   theme: 'moonstone',
-  accentHue: 201,
-  accentSat: 17,
   lightStyle: 'minimal-light',
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
@@ -790,7 +783,7 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   mapWidth: 'map-default-width',
   chartWidth: 'chart-default-width',
   colorfulHeadings: false,
-  minimalIcons: true,
+  colorfulFrame: false,
   colorfulActiveStates: false,
   frostedSidebar: true,
   trimNames: true,
@@ -935,30 +928,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.removeStyle();
           }));
 
-      new Setting(containerEl)
-        .setName('Accent color hue')
-        .setDesc('For links and interactive elements in default color scheme')
-        .addSlider(slider => slider
-            .setLimits(0, 360, 1)
-            .setValue(this.plugin.settings.accentHue)
-          .onChange((value) => {
-            this.plugin.settings.accentHue = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
-      new Setting(containerEl)
-        .setName('Accent color saturation')
-        .setDesc('For links and interactive elements in default color scheme')
-        .addSlider(slider => slider
-            .setLimits(0, 100, 1)
-            .setValue(this.plugin.settings.accentSat)
-          .onChange((value) => {
-            this.plugin.settings.accentSat = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-          }));
-
     containerEl.createEl('br');
     containerEl.createEl('h3');
     containerEl.createEl('h3', {text: 'Features'});
@@ -990,6 +959,17 @@ class MinimalSettingTab extends PluginSettingTab {
       .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulActiveStates)
           .onChange((value) => {
             this.plugin.settings.colorfulActiveStates = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+            })
+          );
+
+    new Setting(containerEl)
+      .setName('Colorful window frame')
+      .setDesc('The top area of the app uses your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulFrame)
+          .onChange((value) => {
+            this.plugin.settings.colorfulFrame = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
@@ -1049,7 +1029,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName('Focus mode')
-      .setDesc('Hide title bar and status bar, hover to display (can be toggled with hotkey)')
+      .setDesc('Hide tab bar and status bar, hover to display (can be toggled with hotkey)')
       .addToggle(toggle => toggle.setValue(this.plugin.settings.focusMode)
           .onChange((value) => {
             this.plugin.settings.focusMode = value;
@@ -1211,7 +1191,7 @@ class MinimalSettingTab extends PluginSettingTab {
     containerEl.createEl('h3', {text: 'Typography'});
 
     new Setting(containerEl)
-      .setName('Body font size')
+      .setName('Text font size')
       .setDesc('Used for the main text (default 16)')
       .addText(text => text.setPlaceholder('16')
         .setValue((this.plugin.settings.textNormal || '') + '')
@@ -1222,8 +1202,8 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Sidebar font size')
-      .setDesc('Used for text in the sidebars (default 13)')
+      .setName('Small font size')
+      .setDesc('Used for text in the sidebars and tabs (default 13)')
       .addText(text => text.setPlaceholder('13')
         .setValue((this.plugin.settings.textSmall || '') + '')
         .onChange((value) => {
@@ -1244,7 +1224,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Normal line length')
+      .setName('Normal line width')
       .setDesc('Number of characters per line (default 40)')
       .addText(text => text.setPlaceholder('40')
         .setValue((this.plugin.settings.lineWidth || '') + '')
@@ -1255,7 +1235,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Wide line length')
+      .setName('Wide line width')
       .setDesc('Number of characters per line for wide elements (default 50)')
       .addText(text => text.setPlaceholder('50')
         .setValue((this.plugin.settings.lineWidthWide || '') + '')
@@ -1266,7 +1246,7 @@ class MinimalSettingTab extends PluginSettingTab {
         }));
 
     new Setting(containerEl)
-      .setName('Maximum line length %')
+      .setName('Maximum line width %')
       .setDesc('Percentage of space inside a pane that a line can fill (default 88)')
       .addText(text => text.setPlaceholder('88')
         .setValue((this.plugin.settings.maxWidth || '') + '')
@@ -1275,15 +1255,9 @@ class MinimalSettingTab extends PluginSettingTab {
           this.plugin.saveData(this.plugin.settings);
           this.plugin.refresh();
         }));
-
-    containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Editor font'});
-    containerEl.createEl('p', {text: 'Overrides the text font defined in Obsidian Appearance settings when in edit mode'});
-
     new Setting(containerEl)
       .setName('Editor font')
-      .setDesc('Use the exact name of the font as it appears on your system')
+      .setDesc('Overrides the text font defined in Obsidian Appearance settings when in edit mode')
       .addText(text => text.setPlaceholder('')
         .setValue((this.plugin.settings.editorFont || '') + '')
         .onChange((value) => {
