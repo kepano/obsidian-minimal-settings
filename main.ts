@@ -163,6 +163,16 @@ export default class MinimalTheme extends Plugin {
     });
 
   this.addCommand({
+      id: 'toggle-minimal-colorful-frame',
+      name: 'Toggle colorful window frame',
+      callback: () => {
+        this.settings.colorfulFrame = !this.settings.colorfulFrame;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+  this.addCommand({
       id: 'cycle-minimal-table-width',
       name: 'Cycle between table width options',
       callback: () => {
@@ -955,22 +965,22 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     new Setting(containerEl)
-      .setName('Colorful active states')
-      .setDesc('Active file and menu items use your accent color')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulActiveStates)
+      .setName('Colorful window frame')
+      .setDesc('The top area of the app uses your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulFrame)
           .onChange((value) => {
-            this.plugin.settings.colorfulActiveStates = value;
+            this.plugin.settings.colorfulFrame = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
           );
 
     new Setting(containerEl)
-      .setName('Colorful window frame')
-      .setDesc('The top area of the app uses your accent color')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulFrame)
+      .setName('Colorful active states')
+      .setDesc('Active file and menu items use your accent color')
+      .addToggle(toggle => toggle.setValue(this.plugin.settings.colorfulActiveStates)
           .onChange((value) => {
-            this.plugin.settings.colorfulFrame = value;
+            this.plugin.settings.colorfulActiveStates = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
             })
