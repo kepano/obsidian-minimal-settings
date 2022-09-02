@@ -597,7 +597,6 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
-    document.body.classList.toggle('frosted-sidebar', this.settings.frostedSidebar);
 
     document.body.removeClass('table-wide','table-max','table-100','table-default-width',
       'iframe-wide','iframe-max','iframe-100','iframe-default-width',
@@ -744,7 +743,6 @@ interface MinimalSettings {
   colorfulHeadings: boolean;
   colorfulFrame: boolean;
   colorfulActiveStates: boolean,
-  frostedSidebar: boolean;
   trimNames: boolean;
   labeledNav: boolean;
   bordersToggle: boolean;
@@ -753,8 +751,6 @@ interface MinimalSettings {
   lineWidth: number;
   lineWidthWide: number;
   maxWidth: number;
-  trimCols: boolean;
-  maxColWidth: string;
   imgGrid: boolean;
   devBlockWidth: boolean;
   tableWidth: string;
@@ -796,7 +792,6 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   colorfulHeadings: false,
   colorfulFrame: false,
   colorfulActiveStates: false,
-  frostedSidebar: true,
   trimNames: true,
   labeledNav: false,
   fullWidthMedia: true,
@@ -1016,17 +1011,6 @@ class MinimalSettingTab extends PluginSettingTab {
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
-
-    new Setting(containerEl)
-      .setName('Translucent sidebar')
-      .setDesc('Use frosted glass effect for sidebar when "Translucent window" is on in Appearance settings')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.frostedSidebar)
-          .onChange((value) => {
-            this.plugin.settings.frostedSidebar = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refresh();
-            })
-          );
 
       new Setting(containerEl)
         .setName('Workspace borders')
