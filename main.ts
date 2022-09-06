@@ -77,10 +77,27 @@ export default class MinimalTheme extends Plugin {
   
     }
   
+    let sidebarUpdate = () => {
+      const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+      const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
+      if (sidebarEl && ribbonEl && this.app.vault.getConfig('theme') == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
+        sidebarEl.addClass('theme-dark');
+        ribbonEl.addClass('theme-dark');
+      } else if (sidebarEl && ribbonEl) {
+        sidebarEl.removeClass('theme-dark'); 
+        ribbonEl.removeClass('theme-dark');
+      }
+    }
+
     // @ts-ignore
     this.registerEvent(app.vault.on('config-changed', settingsUpdate));
+    this.registerEvent(app.workspace.on('css-change', sidebarUpdate));
 
     settingsUpdate();
+    
+    app.workspace.onLayoutReady(() => {
+      sidebarUpdate();
+    });
 
     const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
     const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
@@ -91,18 +108,6 @@ export default class MinimalTheme extends Plugin {
     const mapWidthStyles = ['map-100','map-default-width','map-wide','map-max'];
     const chartWidthStyles = ['chart-100','chart-default-width','chart-wide','chart-max'];
     const theme = ['moonstone', 'obsidian'];
-
-    let sidebarUpdate = () => {
-      const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
-      if (sidebarEl && this.app.vault.getConfig('theme') == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
-        sidebarEl.addClass('theme-dark');
-      } else if (sidebarEl) {
-        sidebarEl.removeClass('theme-dark'); 
-      }
-    }
-
-    this.registerEvent(app.workspace.onLayoutReady(sidebarUpdate));
-    this.registerEvent(app.workspace.on('css-change',sidebarUpdate));
 
     this.addCommand({
       id: 'increase-body-font-size',
