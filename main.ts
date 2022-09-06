@@ -1,97 +1,110 @@
 import { App, Workspace, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 export default class MinimalTheme extends Plugin {
+
   settings: MinimalSettings;
 
   async onload() {
 
-  await this.loadSettings();
+    await this.loadSettings();
 
-  this.addSettingTab(new MinimalSettingTab(this.app, this));
+    this.addSettingTab(new MinimalSettingTab(this.app, this));
 
-  this.addStyle();
+    this.addStyle();
 
-  // Watch for system changes to color theme 
+    // Watch for system changes to color theme 
 
-  let media = window.matchMedia('(prefers-color-scheme: dark)');
+    let media = window.matchMedia('(prefers-color-scheme: dark)');
 
-  let updateSystemTheme = () => {
-    if (media.matches && this.settings.useSystemTheme) {
-      console.log('Dark mode active');
-      this.updateDarkStyle()
-
-    } else if (this.settings.useSystemTheme) {
-      console.log('Light mode active');
-      this.updateLightStyle()
+    let updateSystemTheme = () => {
+      if (media.matches && this.settings.useSystemTheme) {
+        console.log('Dark mode active');
+        this.updateDarkStyle()
+      } else if (this.settings.useSystemTheme) {
+        console.log('Light mode active');
+        this.updateLightStyle()
+      }
     }
-  }
-  media.addEventListener('change', updateSystemTheme);
 
-  // Remove system theme listener when we unload
+    media.addEventListener('change', updateSystemTheme);
 
-  this.register(() => media.removeEventListener('change', updateSystemTheme));
+    // Remove system theme listener when we unload
+    this.register(() => media.removeEventListener('change', updateSystemTheme));
 
-  updateSystemTheme();
+    updateSystemTheme();
 
-  // Check state of Obsidian Settings
+    // Check state of Obsidian Settings
+    let settingsUpdate = () => {
+      // @ts-ignore
+      const fontSize = this.app.vault.getConfig('baseFontSize');
+      this.settings.textNormal = fontSize;
 
-  let settingsUpdate = () => {
-    // @ts-ignore
-    const fontSize = this.app.vault.getConfig('baseFontSize');
-    this.settings.textNormal = fontSize;
+      // @ts-ignore
+      if (this.app.vault.getConfig('foldHeading')) {
+        this.settings.folding = true;
+        this.saveData(this.settings);
+        console.log('Folding is on');
+      } else {
+        this.settings.folding = false;
+        this.saveData(this.settings);
+        console.log('Folding is off');
+      }
+      document.body.classList.toggle('minimal-folding', this.settings.folding);
+      // @ts-ignore
+      if (this.app.vault.getConfig('showLineNumber')) {
+        this.settings.lineNumbers = true;
+        this.saveData(this.settings);
+        console.log('Line numbers are on');
+      } else {
+        this.settings.lineNumbers = false;
+        this.saveData(this.settings);
+        console.log('Line numbers are off');
+      }
+      document.body.classList.toggle('minimal-line-nums', this.settings.lineNumbers);
+      // @ts-ignore
+      if (this.app.vault.getConfig('readableLineLength')) {
+        this.settings.readableLineLength = true;
+        this.saveData(this.settings);
+        console.log('Readable line length is on');
+      } else {
+        this.settings.readableLineLength = false;
+        this.saveData(this.settings);
+        console.log('Readable line length is off');
+      }
 
-    // @ts-ignore
-    if (this.app.vault.getConfig('foldHeading')) {
-      this.settings.folding = true;
-      this.saveData(this.settings);
-      console.log('Folding is on');
-    } else {
-      this.settings.folding = false;
-      this.saveData(this.settings);
-      console.log('Folding is off');
-    }
-    document.body.classList.toggle('minimal-folding', this.settings.folding);
-    // @ts-ignore
-    if (this.app.vault.getConfig('showLineNumber')) {
-      this.settings.lineNumbers = true;
-      this.saveData(this.settings);
-      console.log('Line numbers are on');
-    } else {
-      this.settings.lineNumbers = false;
-      this.saveData(this.settings);
-      console.log('Line numbers are off');
-    }
-    document.body.classList.toggle('minimal-line-nums', this.settings.lineNumbers);
-    // @ts-ignore
-    if (this.app.vault.getConfig('readableLineLength')) {
-      this.settings.readableLineLength = true;
-      this.saveData(this.settings);
-      console.log('Readable line length is on');
-    } else {
-      this.settings.readableLineLength = false;
-      this.saveData(this.settings);
-      console.log('Readable line length is off');
-    }
-    document.body.classList.toggle('minimal-readable', this.settings.readableLineLength);
-    document.body.classList.toggle('minimal-readable-off', !this.settings.readableLineLength);
-  }
+      document.body.classList.toggle('minimal-readable', this.settings.readableLineLength);
+      document.body.classList.toggle('minimal-readable-off', !this.settings.readableLineLength);
   
-  // @ts-ignore
-  this.registerEvent(app.vault.on('config-changed', settingsUpdate));
+    }
+  
+    // @ts-ignore
+    this.registerEvent(app.vault.on('config-changed', settingsUpdate));
 
-  settingsUpdate();
+    settingsUpdate();
 
-  const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
-  const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
-  const imgGridStyles = ['img-grid','img-grid-ratio','img-nogrid'];
-  const tableWidthStyles = ['table-100','table-default-width','table-wide','table-max'];
-  const iframeWidthStyles = ['iframe-100','iframe-default-width','iframe-wide','iframe-max'];
-  const imgWidthStyles = ['img-100','img-default-width','img-wide','img-max'];
-  const mapWidthStyles = ['map-100','map-default-width','map-wide','map-max'];
-  const chartWidthStyles = ['chart-100','chart-default-width','chart-wide','chart-max'];
-  const theme = ['moonstone', 'obsidian'];
+    const lightStyles = ['minimal-light', 'minimal-light-tonal', 'minimal-light-contrast', 'minimal-light-white'];
+    const darkStyles = ['minimal-dark', 'minimal-dark-tonal', 'minimal-dark-black'];
+    const imgGridStyles = ['img-grid','img-grid-ratio','img-nogrid'];
+    const tableWidthStyles = ['table-100','table-default-width','table-wide','table-max'];
+    const iframeWidthStyles = ['iframe-100','iframe-default-width','iframe-wide','iframe-max'];
+    const imgWidthStyles = ['img-100','img-default-width','img-wide','img-max'];
+    const mapWidthStyles = ['map-100','map-default-width','map-wide','map-max'];
+    const chartWidthStyles = ['chart-100','chart-default-width','chart-wide','chart-max'];
+    const theme = ['moonstone', 'obsidian'];
 
-  this.addCommand({
+    let sidebarUpdate = () => {
+      const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+      if (sidebarEl && this.app.vault.getConfig('theme') == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
+        sidebarEl.addClass('theme-dark');
+      } else if (sidebarEl) {
+        sidebarEl.removeClass('theme-dark'); 
+      }
+    }
+
+    this.registerEvent(app.workspace.onLayoutReady(sidebarUpdate));
+    this.registerEvent(app.workspace.on('css-change',sidebarUpdate));
+
+    this.addCommand({
       id: 'increase-body-font-size',
       name: 'Increase body font size',
       callback: () => {
@@ -101,7 +114,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'decrease-body-font-size',
       name: 'Decrease body font size',
       callback: () => {
@@ -111,7 +124,7 @@ export default class MinimalTheme extends Plugin {
       }
     }); 
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-dark-cycle',
       name: 'Cycle between dark mode styles',
       callback: () => {
@@ -121,7 +134,7 @@ export default class MinimalTheme extends Plugin {
       }
     });  
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-light-cycle',
       name: 'Cycle between light mode styles',
       callback: () => {
@@ -131,7 +144,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-hidden-borders',
       name: 'Toggle sidebar borders',
       callback: () => {
@@ -141,8 +154,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-colorful-headings',
       name: 'Toggle colorful headings',
       callback: () => {
@@ -152,7 +164,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-focus-mode',
       name: 'Toggle focus mode',
       callback: () => {
@@ -162,7 +174,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-colorful-frame',
       name: 'Toggle colorful window frame',
       callback: () => {
@@ -172,7 +184,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'cycle-minimal-table-width',
       name: 'Cycle between table width options',
       callback: () => {
@@ -182,7 +194,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'cycle-minimal-image-width',
       name: 'Cycle between image width options',
       callback: () => {
@@ -192,7 +204,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'cycle-minimal-iframe-width',
       name: 'Cycle between iframe width options',
       callback: () => {
@@ -202,7 +214,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'cycle-minimal-chart-width',
       name: 'Cycle between chart width options',
       callback: () => {
@@ -212,7 +224,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'cycle-minimal-map-width',
       name: 'Cycle between map width options',
       callback: () => {
@@ -222,7 +234,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-img-grid',
       name: 'Toggle image grids',
       callback: () => {
@@ -232,7 +244,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-switch',
       name: 'Switch between light and dark mode',
       callback: () => {
@@ -242,7 +254,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-light-default',
       name: 'Use light mode (default)',
       callback: () => {
@@ -252,7 +264,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-light-white',
       name: 'Use light mode (all white)',
       callback: () => {
@@ -262,7 +274,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-light-tonal',
       name: 'Use light mode (low contrast)',
       callback: () => {
@@ -272,7 +284,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-light-contrast',
       name: 'Use light mode (high contrast)',
       callback: () => {
@@ -282,7 +294,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-dark-default',
       name: 'Use dark mode (default)',
       callback: () => {
@@ -292,7 +304,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-dark-tonal',
       name: 'Use dark mode (low contrast)',
       callback: () => {
@@ -302,7 +314,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-dark-black',
       name: 'Use dark mode (true black)',
       callback: () => {
@@ -312,7 +324,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-atom-light',
       name: 'Switch light color scheme to Atom (light)',
       callback: () => {
@@ -323,7 +335,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-default-light',
       name: 'Switch light color scheme to default (light)',
       callback: () => {
@@ -334,7 +346,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-gruvbox-light',
       name: 'Switch light color scheme to Gruvbox (light)',
       callback: () => {
@@ -345,7 +357,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-everforest-light',
       name: 'Switch light color scheme to Everforest (light)',
       callback: () => {
@@ -356,7 +368,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-macos-light',
       name: 'Switch light color scheme to macOS (light)',
       callback: () => {
@@ -367,7 +379,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-notion-light',
       name: 'Switch light color scheme to Notion (light)',
       callback: () => {
@@ -378,7 +390,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-nord-light',
       name: 'Switch light color scheme to Nord (light)',
       callback: () => {
@@ -389,7 +401,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-solarized-light',
       name: 'Switch light color scheme to Solarized (light)',
       callback: () => {
@@ -400,8 +412,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-things-light',
       name: 'Switch light color scheme to Things (light)',
       callback: () => {
@@ -412,7 +423,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-atom-dark',
       name: 'Switch color scheme to Atom (dark)',
       callback: () => {
@@ -423,7 +434,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-dracula-dark',
       name: 'Switch color scheme to Dracula (dark)',
       callback: () => {
@@ -434,7 +445,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-default-dark',
       name: 'Switch dark color scheme to default (dark)',
       callback: () => {
@@ -445,7 +456,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-gruvbox-dark',
       name: 'Switch dark color scheme to Gruvbox (dark)',
       callback: () => {
@@ -456,7 +467,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-everforest-dark',
       name: 'Switch dark color scheme to Everforest (dark)',
       callback: () => {
@@ -467,7 +478,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-macos-dark',
       name: 'Switch light color scheme to macOS (dark)',
       callback: () => {
@@ -478,7 +489,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-nord-dark',
       name: 'Switch dark color scheme to Nord (dark)',
       callback: () => {
@@ -489,7 +500,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-notion-dark',
       name: 'Switch dark color scheme to Notion (dark)',
       callback: () => {
@@ -500,7 +511,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-solarized-dark',
       name: 'Switch dark color scheme to Solarized (dark)',
       callback: () => {
@@ -511,7 +522,7 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.addCommand({
+    this.addCommand({
       id: 'toggle-minimal-things-dark',
       name: 'Switch dark color scheme to Things (dark)',
       callback: () => {
@@ -532,9 +543,8 @@ export default class MinimalTheme extends Plugin {
       }
     });
 
-  this.refresh()
-
-}
+    this.refresh()
+  }
 
   onunload() {
     console.log('Unloading Minimal Theme Settings plugin');
@@ -623,6 +633,7 @@ export default class MinimalTheme extends Plugin {
         + '--max-width:' + this.settings.maxWidth + '%;'
         + '--font-editor-override:' + this.settings.editorFont + ';';
     }
+
   }
 
   refreshSystemTheme() {
@@ -647,8 +658,6 @@ export default class MinimalTheme extends Plugin {
     );
     document.body.addClass(this.settings.darkStyle);
 
-    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
-    if (sidebarEl) sidebarEl.removeClass('theme-dark');
     // @ts-ignore
     this.app.setTheme('obsidian');
     // @ts-ignore
@@ -666,12 +675,6 @@ export default class MinimalTheme extends Plugin {
     );
     document.body.addClass(this.settings.lightStyle);
 
-    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
-    if (sidebarEl && this.settings.lightStyle == 'minimal-light-contrast') {
-      sidebarEl.addClass('theme-dark');
-    } else if (sidebarEl) {
-      sidebarEl.removeClass('theme-dark'); 
-    }
     // @ts-ignore
     this.app.setTheme('moonstone');
     // @ts-ignore
@@ -716,15 +719,7 @@ export default class MinimalTheme extends Plugin {
     // @ts-ignore
     this.app.vault.setConfig('theme', this.settings.theme);
     this.app.workspace.trigger('css-change');
-
-    if (sidebarEl && this.settings.theme == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
-      sidebarEl.addClass('theme-dark');
-    } else if (sidebarEl) {
-      sidebarEl.removeClass('theme-dark'); 
-    }
   }
-
-
 
   removeStyle() {
     document.body.removeClass('minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white','minimal-dark','minimal-dark-tonal','minimal-dark-black');
@@ -896,7 +891,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .onChange((value) => {
           this.plugin.settings.lightStyle = value;
           this.plugin.saveData(this.plugin.settings);
-          this.plugin.removeStyle();
+          this.plugin.updateLightStyle();
         }));
 
       new Setting(containerEl)
@@ -931,7 +926,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .onChange((value) => {
             this.plugin.settings.darkStyle = value;
             this.plugin.saveData(this.plugin.settings);
-            this.plugin.removeStyle();
+            this.plugin.updateDarkStyle();
           }));
 
     containerEl.createEl('br');
