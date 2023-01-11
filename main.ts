@@ -341,6 +341,17 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
+      id: 'toggle-minimal-ayu-light',
+      name: 'Switch light color scheme to Ayu (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-ayu-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+    this.addCommand({
       id: 'toggle-minimal-catppuccin-light',
       name: 'Switch light color scheme to Catppuccin (light)',
       callback: () => {
@@ -444,6 +455,17 @@ export default class MinimalTheme extends Plugin {
       name: 'Switch color scheme to Atom (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-atom-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+    this.addCommand({
+      id: 'toggle-minimal-ayu-dark',
+      name: 'Switch color scheme to Ayu (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-ayu-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -712,6 +734,7 @@ export default class MinimalTheme extends Plugin {
   updateDarkScheme() {
     document.body.removeClass(
       'minimal-atom-dark',
+      'minimal-ayu-dark',
       'minimal-catppuccin-dark',
       'minimal-default-dark',
       'minimal-dracula-dark',
@@ -729,6 +752,7 @@ export default class MinimalTheme extends Plugin {
   updateLightScheme() {
     document.body.removeClass(
       'minimal-atom-light',
+      'minimal-ayu-light',
       'minimal-catppuccin-light',
       'minimal-default-light',
       'minimal-everforest-light',
@@ -894,6 +918,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-light','Default')
           .addOption('minimal-atom-light','Atom')
+          .addOption('minimal-ayu-light','Ayu')
           .addOption('minimal-catppuccin-light','Catppuccin')
           .addOption('minimal-everforest-light','Everforest')
           .addOption('minimal-gruvbox-light','Gruvbox')
@@ -930,6 +955,7 @@ class MinimalSettingTab extends PluginSettingTab {
         .addDropdown(dropdown => dropdown
           .addOption('minimal-default-dark','Default')
           .addOption('minimal-atom-dark','Atom')
+          .addOption('minimal-ayu-dark','Ayu')
           .addOption('minimal-catppuccin-dark','Catppuccin')
           .addOption('minimal-dracula-dark','Dracula')
           .addOption('minimal-everforest-dark','Everforest')
