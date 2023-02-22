@@ -429,6 +429,17 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
+      id: 'toggle-minimal-rose-pine-light',
+      name: 'Switch light color scheme to Rosé Pine (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-rose-pine-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+    this.addCommand({
       id: 'toggle-minimal-solarized-light',
       name: 'Switch light color scheme to Solarized (light)',
       callback: () => {
@@ -554,6 +565,17 @@ export default class MinimalTheme extends Plugin {
       name: 'Switch dark color scheme to Notion (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-notion-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+    this.addCommand({
+      id: 'toggle-minimal-rose-pine-dark',
+      name: 'Switch color scheme to Rosé Pine (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-rose-pine-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -743,6 +765,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-macos-dark',
       'minimal-nord-dark',
       'minimal-notion-dark',
+      'minimal-rose-pine-dark',
       'minimal-solarized-dark',
       'minimal-things-dark'
     );
@@ -760,6 +783,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-macos-light',
       'minimal-nord-light',
       'minimal-notion-light',
+      'minimal-rose-pine-light',
       'minimal-solarized-light',
       'minimal-things-light'
     );
@@ -925,6 +949,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
           .addOption('minimal-notion-light','Notion')
+          .addOption('minimal-rose-pine-light','Rosé Pine')
           .addOption('minimal-solarized-light','Solarized')
           .addOption('minimal-things-light','Things')
           .setValue(this.plugin.settings.lightScheme)
@@ -963,6 +988,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-macos-dark','macOS')
           .addOption('minimal-nord-dark','Nord')
           .addOption('minimal-notion-dark','Notion')
+          .addOption('minimal-rose-pine-dark','Rosé Pine')
           .addOption('minimal-solarized-dark','Solarized')
           .addOption('minimal-things-dark','Things')
           .setValue(this.plugin.settings.darkScheme)
