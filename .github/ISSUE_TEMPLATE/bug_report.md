@@ -12,7 +12,6 @@ Disable plugins and snippets that could be causing a conflict. Update to the lat
 
 - Minimal Theme
 - Minimal Theme Settings plugin
-- Contextual Typography plugin
 
 **Confirm that the bug is not present when Minimal theme is off**
 

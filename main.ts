@@ -1151,16 +1151,9 @@ class MinimalSettingTab extends PluginSettingTab {
 
       layoutDesc.appendChild(
         createEl('span', {
-          text: 'The following options require the '
+          text: 'These options can also be defined on a per-file basis, '
           })
         );
-      layoutDesc.appendChild(
-        createEl('a', {
-          text: "Contextual Typography plugin",
-          href: "obsidian://show-plugin?id=obsidian-contextual-typography",
-        })
-      );
-      layoutDesc.appendText('. These options can also be defined on a per-file basis using YAML, ');
       layoutDesc.appendChild(
         createEl('a', {
           text: "see documentation",
