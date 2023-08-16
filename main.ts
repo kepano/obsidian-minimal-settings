@@ -385,6 +385,17 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
+      id: 'toggle-minimal-eink-light',
+      name: 'Switch light color scheme to Eink (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-eink-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+    this.addCommand({
       id: 'toggle-minimal-everforest-light',
       name: 'Switch light color scheme to Everforest (light)',
       callback: () => {
@@ -528,10 +539,10 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
-      id: 'toggle-minimal-everforest-dark',
-      name: 'Switch dark color scheme to Everforest (dark)',
+      id: 'toggle-minimal-eink-dark',
+      name: 'Switch dark color scheme to Eink (dark)',
       callback: () => {
-        this.settings.darkScheme = 'minimal-everforest-dark';
+        this.settings.darkScheme = 'minimal-eink-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -760,6 +771,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-catppuccin-dark',
       'minimal-default-dark',
       'minimal-dracula-dark',
+      'minimal-eink-dark',
       'minimal-everforest-dark',
       'minimal-gruvbox-dark',
       'minimal-macos-dark',
@@ -778,6 +790,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-ayu-light',
       'minimal-catppuccin-light',
       'minimal-default-light',
+      'minimal-eink-light',
       'minimal-everforest-light',
       'minimal-gruvbox-light',
       'minimal-macos-light',
@@ -944,6 +957,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-atom-light','Atom')
           .addOption('minimal-ayu-light','Ayu')
           .addOption('minimal-catppuccin-light','Catppuccin')
+          .addOption('minimal-eink-light','Eink (beta)')
           .addOption('minimal-everforest-light','Everforest')
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-macos-light','macOS')
@@ -983,6 +997,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-ayu-dark','Ayu')
           .addOption('minimal-catppuccin-dark','Catppuccin')
           .addOption('minimal-dracula-dark','Dracula')
+          .addOption('minimal-eink-dark','Eink (beta)')
           .addOption('minimal-everforest-dark','Everforest')
           .addOption('minimal-gruvbox-dark','Gruvbox')
           .addOption('minimal-macos-dark','macOS')
