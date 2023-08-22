@@ -58,11 +58,12 @@ Several alternate light/dark mode background are availably. These options can be
 
 ## Hotkeys
 
-Hotkeys can be customized to perform the following tasks:
+Hotkeys can be customized to perform the following actions:
 
 - Toggle light/dark mode
 - Cycle between light mode styles
 - Cycle between dark mode styles
+- Switch between color schemes
 - Increase/decrease font size
 - Toggle image grids
 - Toggle sidebar borders
