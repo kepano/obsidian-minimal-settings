@@ -909,7 +909,7 @@ class MinimalSettingTab extends PluginSettingTab {
 
     const mainDesc = containerEl.createEl('p');
 
-      mainDesc.appendText('For help, ');
+      mainDesc.appendText('For help ');
       mainDesc.appendChild(
         createEl('a', {
           text: "see documentation",
