@@ -905,7 +905,6 @@ class MinimalSettingTab extends PluginSettingTab {
     let {containerEl} = this;
 
     containerEl.empty();
-    containerEl.createEl('h3', {text: 'Minimal Theme Settings'});
 
     const mainDesc = containerEl.createEl('p');
 
