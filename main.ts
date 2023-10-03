@@ -528,10 +528,10 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
-      id: 'toggle-minimal-gruvbox-dark',
-      name: 'Switch dark color scheme to Gruvbox (dark)',
+      id: 'toggle-minimal-eink-dark',
+      name: 'Switch dark color scheme to E-ink (dark)',
       callback: () => {
-        this.settings.darkScheme = 'minimal-gruvbox-dark';
+        this.settings.darkScheme = 'minimal-eink-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -539,10 +539,21 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
-      id: 'toggle-minimal-eink-dark',
-      name: 'Switch dark color scheme to E-ink (dark)',
+      id: 'toggle-minimal-everforest-dark',
+      name: 'Switch dark color scheme to Everforest (dark)',
       callback: () => {
-        this.settings.darkScheme = 'minimal-eink-dark';
+        this.settings.darkScheme = 'minimal-everforest-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+    this.addCommand({
+      id: 'toggle-minimal-gruvbox-dark',
+      name: 'Switch dark color scheme to Gruvbox (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-gruvbox-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
