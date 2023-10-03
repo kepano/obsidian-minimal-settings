@@ -906,34 +906,13 @@ class MinimalSettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    const mainDesc = containerEl.createEl('p');
+    const colorSection = containerEl.createEl('div', {cls: 'setting-item setting-item-heading'});
 
-      mainDesc.appendText('For help ');
-      mainDesc.appendChild(
-        createEl('a', {
-          text: "see documentation",
-          href: "https://minimal.guide",
-        })
-      );
-      mainDesc.appendText(' or join ');
-      mainDesc.appendChild(
-        createEl('strong', {
-          text: "#minimal",
-        })
-      );
-      mainDesc.appendText(' in the ');
-      mainDesc.appendChild(
-        createEl('a', {
-          text: "Obsidian Discord",
-          href: "https://obsidian.md/community",
-        })
-      );
-      mainDesc.appendText(' community.');
+    const colorSectionInfo =  colorSection.createEl('div', {cls: 'setting-item-info'});
 
-    containerEl.createEl('br');
-    containerEl.createEl('h3', {text: 'Color scheme'});
+    colorSectionInfo.createEl('div', {text: 'Color scheme', cls: 'setting-item-name'});
 
-    const colorDesc = containerEl.createEl('p');
+    const colorDesc = colorSectionInfo.createEl('div', {cls: 'setting-item-description'});
 
       colorDesc.appendChild(
         createEl('span', {
@@ -946,7 +925,15 @@ class MinimalSettingTab extends PluginSettingTab {
           href: "obsidian://show-plugin?id=obsidian-style-settings",
         })
       );
-      colorDesc.appendText(' plugin.');
+      colorDesc.appendText(' plugin. See ');
+
+      colorDesc.appendChild(
+        createEl('a', {
+          text: "documentation",
+          href: "https://minimal.guide/features/color-schemes",
+        })
+      );
+      colorDesc.appendText(' for details.');
 
       new Setting(containerEl)
         .setName('Light mode color scheme')
@@ -1027,8 +1014,28 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Features'});
+
+    const featuresSection = containerEl.createEl('div', {cls: 'setting-item setting-item-heading'});
+
+    const featuresSectionInfo =  featuresSection.createEl('div', {cls: 'setting-item-info'});
+
+    featuresSectionInfo.createEl('div', {text: 'Features', cls: 'setting-item-name'});
+
+    const featuresSectionDesc = featuresSectionInfo.createEl('div', {cls: 'setting-item-description'});
+
+      featuresSectionDesc.appendChild(
+        createEl('span', {
+          text: 'See '
+          })
+        );
+
+      featuresSectionDesc.appendChild(
+        createEl('a', {
+          text: "documentation",
+          href: "https://minimal.guide",
+        })
+      );
+      featuresSectionDesc.appendText(' for details.');
 
     new Setting(containerEl)
       .setName('Match system setting for light or dark mode')
@@ -1158,23 +1165,27 @@ class MinimalSettingTab extends PluginSettingTab {
           }));
 
     containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Layout'});
 
-    const layoutDesc = containerEl.createEl('p');
+    const layoutSection = containerEl.createEl('div', {cls: 'setting-item setting-item-heading'});
 
-      layoutDesc.appendChild(
+    const layoutSectionInfo =  layoutSection.createEl('div', {cls: 'setting-item-info'});
+
+    layoutSectionInfo.createEl('div', {text: 'Layout', cls: 'setting-item-name'});
+
+    const layoutSectionDesc = layoutSectionInfo.createEl('div', {cls: 'setting-item-description'});
+
+      layoutSectionDesc.appendChild(
         createEl('span', {
-          text: 'These options can also be defined on a per-file basis, '
+          text: 'These options can also be defined on a per-file basis, see '
           })
         );
-      layoutDesc.appendChild(
+      layoutSectionDesc.appendChild(
         createEl('a', {
-          text: "see documentation",
-          href: "https://minimal.guide/Features/Block+width",
+          text: "documentation",
+          href: "https://minimal.guide/features/block-width",
         })
       );
-      layoutDesc.appendText(' for details.');
+      layoutSectionDesc.appendText(' for details.');
 
     new Setting(containerEl)
       .setName('Image grids')
@@ -1267,8 +1278,7 @@ class MinimalSettingTab extends PluginSettingTab {
         );
 
     containerEl.createEl('br');
-    containerEl.createEl('h3');
-    containerEl.createEl('h3', {text: 'Typography'});
+    containerEl.createEl('div', {text: 'Typography', cls: 'setting-item setting-item-heading'});
 
     new Setting(containerEl)
       .setName('Text font size')
