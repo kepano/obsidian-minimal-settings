@@ -407,6 +407,17 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
+      id: 'toggle-minimal-flexoki-light',
+      name: 'Switch light color scheme to Flexoki (light)',
+      callback: () => {
+        this.settings.lightScheme = 'minimal-flexoki-light';
+        this.saveData(this.settings);
+        this.updateLightScheme();
+        this.updateLightStyle();
+      }
+    });
+
+    this.addCommand({
       id: 'toggle-minimal-macos-light',
       name: 'Switch light color scheme to macOS (light)',
       callback: () => {
@@ -543,6 +554,17 @@ export default class MinimalTheme extends Plugin {
       name: 'Switch dark color scheme to Everforest (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-everforest-dark';
+        this.saveData(this.settings);
+        this.updateDarkScheme();
+        this.updateDarkStyle();
+      }
+    });
+
+    this.addCommand({
+      id: 'toggle-minimal-flexoki-dark',
+      name: 'Switch dark color scheme to Flexoki (dark)',
+      callback: () => {
+        this.settings.darkScheme = 'minimal-flexoki-dark';
         this.saveData(this.settings);
         this.updateDarkScheme();
         this.updateDarkStyle();
@@ -784,6 +806,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-dracula-dark',
       'minimal-eink-dark',
       'minimal-everforest-dark',
+      'minimal-flexoki-dark',
       'minimal-gruvbox-dark',
       'minimal-macos-dark',
       'minimal-nord-dark',
@@ -803,6 +826,7 @@ export default class MinimalTheme extends Plugin {
       'minimal-default-light',
       'minimal-eink-light',
       'minimal-everforest-light',
+      'minimal-flexoki-light',
       'minimal-gruvbox-light',
       'minimal-macos-light',
       'minimal-nord-light',
@@ -956,6 +980,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-catppuccin-light','Catppuccin')
           .addOption('minimal-eink-light','E-ink (beta)')
           .addOption('minimal-everforest-light','Everforest')
+          .addOption('minimal-flexoki-light','Flexoki')
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
@@ -996,6 +1021,7 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-dracula-dark','Dracula')
           .addOption('minimal-eink-dark','E-ink (beta)')
           .addOption('minimal-everforest-dark','Everforest')
+          .addOption('minimal-flexoki-dark','Flexoki')
           .addOption('minimal-gruvbox-dark','Gruvbox')
           .addOption('minimal-macos-dark','macOS')
           .addOption('minimal-nord-dark','Nord')
