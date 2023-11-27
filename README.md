@@ -28,12 +28,13 @@ Switch between preset color schemes or create your own using Style Settings plug
 - Dracula
 - E-ink (beta)
 - Everforest
+- Flexoki
 - Gruvbox
 - macOS
 - Nord
-- Notion
 - Rosé Pine
 - Solarized
+- Sky
 - Things
 
 
