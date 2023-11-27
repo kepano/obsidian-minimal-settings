@@ -430,7 +430,7 @@ export default class MinimalTheme extends Plugin {
 
     this.addCommand({
       id: 'toggle-minimal-notion-light',
-      name: 'Switch light color scheme to Notion (light)',
+      name: 'Switch light color scheme to Sky (light)',
       callback: () => {
         this.settings.lightScheme = 'minimal-notion-light';
         this.saveData(this.settings);
@@ -606,7 +606,7 @@ export default class MinimalTheme extends Plugin {
 
     this.addCommand({
       id: 'toggle-minimal-notion-dark',
-      name: 'Switch dark color scheme to Notion (dark)',
+      name: 'Switch dark color scheme to Sky (dark)',
       callback: () => {
         this.settings.darkScheme = 'minimal-notion-dark';
         this.saveData(this.settings);
@@ -984,8 +984,8 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-gruvbox-light','Gruvbox')
           .addOption('minimal-macos-light','macOS')
           .addOption('minimal-nord-light','Nord')
-          .addOption('minimal-notion-light','Notion')
           .addOption('minimal-rose-pine-light','Rosé Pine')
+          .addOption('minimal-notion-light','Sky')
           .addOption('minimal-solarized-light','Solarized')
           .addOption('minimal-things-light','Things')
           .setValue(this.plugin.settings.lightScheme)
@@ -1025,8 +1025,8 @@ class MinimalSettingTab extends PluginSettingTab {
           .addOption('minimal-gruvbox-dark','Gruvbox')
           .addOption('minimal-macos-dark','macOS')
           .addOption('minimal-nord-dark','Nord')
-          .addOption('minimal-notion-dark','Notion')
           .addOption('minimal-rose-pine-dark','Rosé Pine')
+          .addOption('minimal-notion-dark','Sky')
           .addOption('minimal-solarized-dark','Solarized')
           .addOption('minimal-things-dark','Things')
           .setValue(this.plugin.settings.darkScheme)
