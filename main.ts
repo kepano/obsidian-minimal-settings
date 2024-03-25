@@ -12,27 +12,6 @@ export default class MinimalTheme extends Plugin {
 
     this.addStyle();
 
-    // Watch for system changes to color theme 
-
-    let media = window.matchMedia('(prefers-color-scheme: dark)');
-
-    let updateSystemTheme = () => {
-      if (media.matches && this.settings.useSystemTheme) {
-        console.log('Dark mode active');
-        this.updateDarkStyle()
-      } else if (this.settings.useSystemTheme) {
-        console.log('Light mode active');
-        this.updateLightStyle()
-      }
-    }
-
-    media.addEventListener('change', updateSystemTheme);
-
-    // Remove system theme listener when we unload
-    this.register(() => media.removeEventListener('change', updateSystemTheme));
-
-    updateSystemTheme();
-
     // Check state of Obsidian Settings
     let settingsUpdate = () => {
       // @ts-ignore
@@ -80,7 +59,7 @@ export default class MinimalTheme extends Plugin {
     let sidebarUpdate = () => {
       const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
       const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
-      if (sidebarEl && ribbonEl && this.app.vault.getConfig('theme') == 'moonstone' && this.settings.lightStyle == 'minimal-light-contrast') {
+      if (sidebarEl && ribbonEl && document.body.classList.contains('theme-light') && this.settings.lightStyle == 'minimal-light-contrast') {
         sidebarEl.addClass('theme-dark');
         ribbonEl.addClass('theme-dark');
       } else if (sidebarEl && ribbonEl) {
@@ -91,6 +70,7 @@ export default class MinimalTheme extends Plugin {
 
     // @ts-ignore
     this.registerEvent(app.vault.on('config-changed', settingsUpdate));
+    // @ts-ignore
     this.registerEvent(app.workspace.on('css-change', sidebarUpdate));
 
     settingsUpdate();
@@ -107,7 +87,6 @@ export default class MinimalTheme extends Plugin {
     const imgWidthStyles = ['img-100','img-default-width','img-wide','img-max'];
     const mapWidthStyles = ['map-100','map-default-width','map-wide','map-max'];
     const chartWidthStyles = ['chart-100','chart-default-width','chart-wide','chart-max'];
-    const theme = ['moonstone', 'obsidian'];
 
     this.addCommand({
       id: 'increase-body-font-size',
@@ -253,8 +232,6 @@ export default class MinimalTheme extends Plugin {
       id: 'toggle-minimal-switch',
       name: 'Switch between light and dark mode',
       callback: () => {
-        this.settings.theme = theme[(theme.indexOf(this.settings.theme) + 1) % theme.length];
-        this.saveData(this.settings);
         this.updateTheme();
       }
     });
@@ -714,7 +691,6 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('minimal-focus-mode', this.settings.focusMode);
     document.body.classList.toggle('links-int-on', this.settings.underlineInternal);
     document.body.classList.toggle('links-ext-on', this.settings.underlineExternal);
-    document.body.classList.toggle('system-shade', this.settings.useSystemTheme);
     document.body.classList.toggle('full-width-media', this.settings.fullWidthMedia);
     document.body.classList.toggle('img-grid', this.settings.imgGrid);
     document.body.classList.toggle('minimal-dev-block-width', this.settings.devBlockWidth);
@@ -751,19 +727,6 @@ export default class MinimalTheme extends Plugin {
 
   }
 
-  refreshSystemTheme() {
-    const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-
-    if (isDarkMode && this.settings.useSystemTheme) {
-        console.log('Dark mode active');
-        this.updateDarkStyle()
-
-      } else if (this.settings.useSystemTheme) {
-        console.log('Light mode active');
-        this.updateLightStyle()
-      }
-  }
-
   updateDarkStyle() {
     document.body.removeClass(
       'theme-light',
@@ -771,12 +734,16 @@ export default class MinimalTheme extends Plugin {
       'minimal-dark-tonal',
       'minimal-dark-black'
     );
-    document.body.addClass(this.settings.darkStyle);
-
-    // @ts-ignore
-    this.app.setTheme('obsidian');
-    // @ts-ignore
-    this.app.vault.setConfig('theme', 'obsidian');
+    document.body.addClass(
+      'theme-dark',
+      this.settings.darkStyle
+    );
+    if (this.app.vault.getConfig('theme') !== 'system') {
+      // @ts-ignore
+      this.app.setTheme('obsidian');
+      // @ts-ignore
+      this.app.vault.setConfig('theme', 'obsidian');
+    }
     this.app.workspace.trigger('css-change');
   }
 
@@ -788,12 +755,16 @@ export default class MinimalTheme extends Plugin {
       'minimal-light-contrast',
       'minimal-light-white'
     );
-    document.body.addClass(this.settings.lightStyle);
-
-    // @ts-ignore
-    this.app.setTheme('moonstone');
-    // @ts-ignore
-    this.app.vault.setConfig('theme', 'moonstone');
+    document.body.addClass(
+      'theme-light',
+      this.settings.lightStyle
+    );
+    if (this.app.vault.getConfig('theme') !== 'system') {
+      // @ts-ignore
+      this.app.setTheme('moonstone');
+      // @ts-ignore
+      this.app.vault.setConfig('theme', 'moonstone');
+    }
     this.app.workspace.trigger('css-change');
   }
 
@@ -839,10 +810,31 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateTheme() {
-    // @ts-ignore
-    this.app.setTheme(this.settings.theme);
-    // @ts-ignore
-    this.app.vault.setConfig('theme', this.settings.theme);
+    if (this.app.vault.getConfig('theme') === 'system') {
+        if (document.body.classList.contains('theme-light')) {
+          document.body.removeClass('theme-light');
+          document.body.addClass('theme-dark');
+        } else {
+          document.body.removeClass('theme-dark');
+          document.body.addClass('theme-light');
+        }
+    } else {
+        if (document.body.classList.contains('theme-light')) {
+          document.body.removeClass('theme-light');
+          document.body.addClass('theme-dark');
+        } else {
+          document.body.removeClass('theme-dark');
+          document.body.addClass('theme-light');
+        }
+
+      const currentTheme = this.app.vault.getConfig('theme');
+      const newTheme = currentTheme === 'moonstone' ? 'obsidian' : 'moonstone';
+
+      // @ts-ignore
+      this.app.setTheme(newTheme);
+      // @ts-ignore
+      this.app.vault.setConfig('theme', newTheme);
+    }
     this.app.workspace.trigger('css-change');
   }
 
@@ -854,7 +846,6 @@ export default class MinimalTheme extends Plugin {
 }
 
 interface MinimalSettings {
-  theme: string;
   lightStyle: string;
   darkStyle: string;
   lightScheme: string;
@@ -884,14 +875,12 @@ interface MinimalSettings {
   textSmall: number;
   underlineInternal: boolean;
   underlineExternal: boolean;
-  useSystemTheme: boolean;
   folding: boolean;
   lineNumbers: boolean;
   readableLineLength: boolean;
 }
 
 const DEFAULT_SETTINGS: MinimalSettings = {
-  theme: 'moonstone',
   lightStyle: 'minimal-light',
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
@@ -920,7 +909,6 @@ const DEFAULT_SETTINGS: MinimalSettings = {
   focusMode: false,
   underlineInternal: true,
   underlineExternal: true,
-  useSystemTheme: false,
   folding: true,
   lineNumbers: false,
   readableLineLength: false,
@@ -1073,17 +1061,6 @@ class MinimalSettingTab extends PluginSettingTab {
         })
       );
       featuresSectionDesc.appendText(' for details.');
-
-    new Setting(containerEl)
-      .setName('Match system setting for light or dark mode')
-      .setDesc('Automatically switch based on your OS setting.')
-      .addToggle(toggle => toggle.setValue(this.plugin.settings.useSystemTheme)
-          .onChange((value) => {
-            this.plugin.settings.useSystemTheme = value;
-            this.plugin.saveData(this.plugin.settings);
-            this.plugin.refreshSystemTheme();
-            })
-          );
 
     new Setting(containerEl)
       .setName('Text labels for primary navigation')
