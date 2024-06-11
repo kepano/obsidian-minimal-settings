@@ -10,3 +10,4 @@ package-lock.json
 data.json
 *.js.map
 main.js
+/.DS_Store

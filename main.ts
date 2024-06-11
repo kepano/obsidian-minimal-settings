@@ -10,7 +10,7 @@ export default class MinimalTheme extends Plugin {
 
     this.addSettingTab(new MinimalSettingTab(this.app, this));
 
-    this.addStyle();
+    this.loadRules();
 
     // Check state of Obsidian Settings
     let settingsUpdate = () => {
@@ -57,6 +57,7 @@ export default class MinimalTheme extends Plugin {
     }
   
     let sidebarUpdate = () => {
+      const drawerEl = document.getElementsByClassName('mod-left-split')[0];
       const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
       const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
       if (sidebarEl && ribbonEl && document.body.classList.contains('theme-light') && this.settings.lightStyle == 'minimal-light-contrast') {
@@ -640,6 +641,11 @@ export default class MinimalTheme extends Plugin {
 
   onunload() {
     console.log('Unloading Minimal Theme Settings plugin');
+    this.unloadRules();
+    this.removeStyle();
+    this.removeSettings();
+    this.removeLightScheme();
+    this.removeDarkScheme();
   }
 
   async loadSettings() {
@@ -657,7 +663,7 @@ export default class MinimalTheme extends Plugin {
   }
 
   // add the styling elements we need
-  addStyle() {
+  loadRules() {
     // add a css block for our settings-dependent styles
     const css = document.createElement('style');
     css.id = 'minimal-theme';
@@ -668,6 +674,13 @@ export default class MinimalTheme extends Plugin {
 
     // update the style with the settings-dependent styles
     this.updateStyle();
+  }
+  unloadRules() {
+    const styleElement = document.getElementById('minimal-theme');
+    if (styleElement) {
+      styleElement.parentNode.removeChild(styleElement);
+    }
+    document.body.classList.remove('minimal-theme');
   }
 
   setFontSize() {
@@ -680,9 +693,14 @@ export default class MinimalTheme extends Plugin {
   // update the styles (at the start, or as the result of a settings change)
   updateStyle() {
     this.removeStyle();
+    this.removeSettings();
 
-    document.body.addClass(this.settings.darkScheme);
-    document.body.addClass(this.settings.lightScheme);
+    document.body.addClass(
+      this.settings.lightStyle,
+      this.settings.lightScheme,
+      this.settings.darkStyle,
+      this.settings.darkScheme
+    );
 
     document.body.classList.toggle('borders-none', !this.settings.bordersToggle);
     document.body.classList.toggle('colorful-headings', this.settings.colorfulHeadings);
@@ -699,16 +717,13 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
 
-    document.body.removeClass('table-wide','table-max','table-100','table-default-width',
-      'iframe-wide','iframe-max','iframe-100','iframe-default-width',
-      'img-wide','img-max','img-100','img-default-width',
-      'chart-wide','chart-max','chart-100','chart-default-width',
-      'map-wide','map-max','map-100','map-default-width');
-    document.body.addClass(this.settings.chartWidth);
-    document.body.addClass(this.settings.tableWidth);
-    document.body.addClass(this.settings.imgWidth);
-    document.body.addClass(this.settings.iframeWidth);
-    document.body.addClass(this.settings.mapWidth);
+    document.body.addClass(
+      this.settings.chartWidth,
+      this.settings.tableWidth,
+      this.settings.imgWidth,
+      this.settings.iframeWidth,
+      this.settings.mapWidth
+    );
 
     // get the custom css element
     const el = document.getElementById('minimal-theme');
@@ -724,7 +739,6 @@ export default class MinimalTheme extends Plugin {
         + '--max-width:' + this.settings.maxWidth + '%;'
         + '--font-editor-override:' + this.settings.editorFont + ';';
     }
-
   }
 
   updateDarkStyle() {
@@ -769,43 +783,12 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateDarkScheme() {
-    document.body.removeClass(
-      'minimal-atom-dark',
-      'minimal-ayu-dark',
-      'minimal-catppuccin-dark',
-      'minimal-default-dark',
-      'minimal-dracula-dark',
-      'minimal-eink-dark',
-      'minimal-everforest-dark',
-      'minimal-flexoki-dark',
-      'minimal-gruvbox-dark',
-      'minimal-macos-dark',
-      'minimal-nord-dark',
-      'minimal-notion-dark',
-      'minimal-rose-pine-dark',
-      'minimal-solarized-dark',
-      'minimal-things-dark'
-    );
+    this.removeDarkScheme();
     document.body.addClass(this.settings.darkScheme);
   }
 
   updateLightScheme() {
-    document.body.removeClass(
-      'minimal-atom-light',
-      'minimal-ayu-light',
-      'minimal-catppuccin-light',
-      'minimal-default-light',
-      'minimal-eink-light',
-      'minimal-everforest-light',
-      'minimal-flexoki-light',
-      'minimal-gruvbox-light',
-      'minimal-macos-light',
-      'minimal-nord-light',
-      'minimal-notion-light',
-      'minimal-rose-pine-light',
-      'minimal-solarized-light',
-      'minimal-things-light'
-    );
+    this.removeLightScheme();
     document.body.addClass(this.settings.lightScheme);
   }
 
@@ -838,9 +821,88 @@ export default class MinimalTheme extends Plugin {
     this.app.workspace.trigger('css-change');
   }
 
+  removeSettings() {
+
+    document.body.removeClass(
+      'borders-none',
+      'colorful-headings',
+      'colorful-frame',
+      'colorful-active',
+      'minimal-focus-mode',
+      'links-int-on',
+      'links-ext-on',
+      'full-width-media',
+      'img-grid',
+      'minimal-dev-block-width',
+      'minimal-status-off',
+      'full-file-names',
+      'labeled-nav',
+      'minimal-folding'
+    );
+
+    document.body.removeClass(
+      'table-wide',
+      'table-max',
+      'table-100',
+      'table-default-width',
+      'iframe-wide',
+      'iframe-max',
+      'iframe-100',
+      'iframe-default-width',
+      'img-wide',
+      'img-max',
+      'img-100',
+      'img-default-width',
+      'chart-wide',
+      'chart-max',
+      'chart-100',
+      'chart-default-width',
+      'map-wide',
+      'map-max',
+      'map-100',
+      'map-default-width'
+      );
+  }
+
   removeStyle() {
     document.body.removeClass('minimal-light','minimal-light-tonal','minimal-light-contrast','minimal-light-white','minimal-dark','minimal-dark-tonal','minimal-dark-black');
-    document.body.addClass(this.settings.lightStyle,this.settings.darkStyle);
+  }
+  removeDarkScheme() {
+    document.body.removeClass(
+      'minimal-atom-dark',
+      'minimal-ayu-dark',
+      'minimal-catppuccin-dark',
+      'minimal-default-dark',
+      'minimal-dracula-dark',
+      'minimal-eink-dark',
+      'minimal-everforest-dark',
+      'minimal-flexoki-dark',
+      'minimal-gruvbox-dark',
+      'minimal-macos-dark',
+      'minimal-nord-dark',
+      'minimal-notion-dark',
+      'minimal-rose-pine-dark',
+      'minimal-solarized-dark',
+      'minimal-things-dark'
+    );
+  }
+  removeLightScheme() {
+    document.body.removeClass(
+      'minimal-atom-light',
+      'minimal-ayu-light',
+      'minimal-catppuccin-light',
+      'minimal-default-light',
+      'minimal-eink-light',
+      'minimal-everforest-light',
+      'minimal-flexoki-light',
+      'minimal-gruvbox-light',
+      'minimal-macos-light',
+      'minimal-nord-light',
+      'minimal-notion-light',
+      'minimal-rose-pine-light',
+      'minimal-solarized-light',
+      'minimal-things-light'
+    );
   }
 
 }
