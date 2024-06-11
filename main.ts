@@ -57,7 +57,6 @@ export default class MinimalTheme extends Plugin {
     }
   
     let sidebarUpdate = () => {
-      const drawerEl = document.getElementsByClassName('mod-left-split')[0];
       const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
       const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
       if (sidebarEl && ribbonEl && document.body.classList.contains('theme-light') && this.settings.lightStyle == 'minimal-light-contrast') {
@@ -641,6 +640,11 @@ export default class MinimalTheme extends Plugin {
 
   onunload() {
     console.log('Unloading Minimal Theme Settings plugin');
+    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+    const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
+    sidebarEl.removeClass('theme-dark'); 
+    ribbonEl.removeClass('theme-dark');
+
     this.unloadRules();
     this.removeStyle();
     this.removeSettings();
