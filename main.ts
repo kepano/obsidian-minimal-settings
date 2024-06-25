@@ -15,11 +15,11 @@ export default class MinimalTheme extends Plugin {
     // Check state of Obsidian Settings
     let settingsUpdate = () => {
       // @ts-ignore
-      const fontSize = this.app.vault.getConfig('baseFontSize');
+      const fontSize = (this.app.vault as any).getConfig('baseFontSize');
       this.settings.textNormal = fontSize;
 
       // @ts-ignore
-      if (this.app.vault.getConfig('foldHeading')) {
+      if ((this.app.vault as any).getConfig('foldHeading')) {
         this.settings.folding = true;
         this.saveData(this.settings);
         console.log('Folding is on');
@@ -30,7 +30,7 @@ export default class MinimalTheme extends Plugin {
       }
       document.body.classList.toggle('minimal-folding', this.settings.folding);
       // @ts-ignore
-      if (this.app.vault.getConfig('showLineNumber')) {
+      if ((this.app.vault as any).getConfig('showLineNumber')) {
         this.settings.lineNumbers = true;
         this.saveData(this.settings);
         console.log('Line numbers are on');
@@ -41,7 +41,7 @@ export default class MinimalTheme extends Plugin {
       }
       document.body.classList.toggle('minimal-line-nums', this.settings.lineNumbers);
       // @ts-ignore
-      if (this.app.vault.getConfig('readableLineLength')) {
+      if ((this.app.vault as any).getConfig('readableLineLength')) {
         this.settings.readableLineLength = true;
         this.saveData(this.settings);
         console.log('Readable line length is on');
@@ -756,7 +756,7 @@ export default class MinimalTheme extends Plugin {
       'theme-dark',
       this.settings.darkStyle
     );
-    if (this.app.vault.getConfig('theme') !== 'system') {
+    if ((this.app.vault as any).getConfig('theme') !== 'system') {
       // @ts-ignore
       this.app.setTheme('obsidian');
       // @ts-ignore
@@ -777,7 +777,7 @@ export default class MinimalTheme extends Plugin {
       'theme-light',
       this.settings.lightStyle
     );
-    if (this.app.vault.getConfig('theme') !== 'system') {
+    if ((this.app.vault as any).getConfig('theme') !== 'system') {
       // @ts-ignore
       this.app.setTheme('moonstone');
       // @ts-ignore
@@ -797,7 +797,7 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateTheme() {
-    if (this.app.vault.getConfig('theme') === 'system') {
+    if ((this.app.vault as any).getConfig('theme') === 'system') {
         if (document.body.classList.contains('theme-light')) {
           document.body.removeClass('theme-light');
           document.body.addClass('theme-dark');
@@ -814,7 +814,7 @@ export default class MinimalTheme extends Plugin {
           document.body.addClass('theme-light');
         }
 
-      const currentTheme = this.app.vault.getConfig('theme');
+      const currentTheme = (this.app.vault as any).getConfig('theme');
       const newTheme = currentTheme === 'moonstone' ? 'obsidian' : 'moonstone';
 
       // @ts-ignore
