@@ -18,43 +18,49 @@ export default class MinimalTheme extends Plugin {
       const fontSize = this.app.vault.getConfig('baseFontSize');
       this.settings.textNormal = fontSize;
 
+      let folding = false;
+      let lineNumbers = false;
+      let readableLineLength = false;
+
       // @ts-ignore
       if (this.app.vault.getConfig('foldHeading')) {
         this.settings.folding = true;
-        this.saveData(this.settings);
         console.log('Folding is on');
+        folding = true;
       } else {
         this.settings.folding = false;
-        this.saveData(this.settings);
         console.log('Folding is off');
       }
-      document.body.classList.toggle('minimal-folding', this.settings.folding);
+
       // @ts-ignore
       if (this.app.vault.getConfig('showLineNumber')) {
         this.settings.lineNumbers = true;
-        this.saveData(this.settings);
         console.log('Line numbers are on');
+        lineNumbers = true;
       } else {
         this.settings.lineNumbers = false;
-        this.saveData(this.settings);
         console.log('Line numbers are off');
       }
-      document.body.classList.toggle('minimal-line-nums', this.settings.lineNumbers);
+
       // @ts-ignore
       if (this.app.vault.getConfig('readableLineLength')) {
         this.settings.readableLineLength = true;
-        this.saveData(this.settings);
         console.log('Readable line length is on');
+        readableLineLength = true;
       } else {
         this.settings.readableLineLength = false;
-        this.saveData(this.settings);
         console.log('Readable line length is off');
       }
 
-      document.body.classList.toggle('minimal-readable', this.settings.readableLineLength);
-      document.body.classList.toggle('minimal-readable-off', !this.settings.readableLineLength);
-  
-    }
+      const bodyClassList = document.body.classList;
+      bodyClassList.toggle('minimal-folding', folding);
+      bodyClassList.toggle('minimal-line-nums', lineNumbers);
+      bodyClassList.toggle('minimal-readable', readableLineLength);
+      bodyClassList.toggle('minimal-readable-off', !readableLineLength);
+
+      // Save the updated settings once
+      this.saveData(this.settings);
+    };
   
     let sidebarUpdate = () => {
       const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
