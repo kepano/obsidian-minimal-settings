@@ -756,6 +756,7 @@ export default class MinimalTheme extends Plugin {
       'theme-dark',
       this.settings.darkStyle
     );
+    // @ts-ignore
     if (this.app.vault.getConfig('theme') !== 'system') {
       // @ts-ignore
       this.app.setTheme('obsidian');
@@ -777,6 +778,7 @@ export default class MinimalTheme extends Plugin {
       'theme-light',
       this.settings.lightStyle
     );
+    // @ts-ignore
     if (this.app.vault.getConfig('theme') !== 'system') {
       // @ts-ignore
       this.app.setTheme('moonstone');
@@ -797,6 +799,7 @@ export default class MinimalTheme extends Plugin {
   }
 
   updateTheme() {
+    // @ts-ignore
     if (this.app.vault.getConfig('theme') === 'system') {
         if (document.body.classList.contains('theme-light')) {
           document.body.removeClass('theme-light');
@@ -814,6 +817,7 @@ export default class MinimalTheme extends Plugin {
           document.body.addClass('theme-light');
         }
 
+      // @ts-ignore
       const currentTheme = this.app.vault.getConfig('theme');
       const newTheme = currentTheme === 'moonstone' ? 'obsidian' : 'moonstone';
 
