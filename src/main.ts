@@ -647,9 +647,13 @@ export default class MinimalTheme extends Plugin {
   onunload() {
     console.log('Unloading Minimal Theme Settings plugin');
     const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+    if (sidebarEl) {
+      sidebarEl.removeClass('theme-dark');
+    }
     const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
-    sidebarEl.removeClass('theme-dark'); 
-    ribbonEl.removeClass('theme-dark');
+    if (ribbonEl) {
+      ribbonEl.removeClass('theme-dark');
+    }
 
     this.unloadRules();
     this.removeStyle();
