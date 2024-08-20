@@ -1,4 +1,5 @@
 import { PluginSettingTab, Setting } from 'obsidian';
+import MinimalTheme from "./main";
 
 export interface MinimalSettings {
   lightStyle: string;
@@ -72,8 +73,8 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
 
 export class MinimalSettingsTab extends PluginSettingTab {
 
-
   plugin: MinimalTheme;
+  // @ts-ignore
   constructor(app: App, plugin: MinimalTheme) {
     super(app, plugin);
     this.plugin = plugin;

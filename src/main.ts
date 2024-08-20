@@ -80,6 +80,7 @@ export default class MinimalTheme extends Plugin {
 
     settingsUpdate();
     
+    // @ts-ignore
     app.workspace.onLayoutReady(() => {
       sidebarUpdate();
     });
