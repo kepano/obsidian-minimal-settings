@@ -41,7 +41,7 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
   darkScheme: 'minimal-default-dark',
-  editorFont: '',
+  editorFont: "'??'",
   lineHeight: 1.5,
   lineWidth: 40,
   lineWidthWide: 50,
@@ -517,8 +517,8 @@ export class MinimalSettingsTab extends PluginSettingTab {
         }));
     new Setting(containerEl)
       .setName('Editor font')
-      .setDesc('Overrides the text font defined in Obsidian Appearance settings when in edit mode.')
-      .addText(text => text.setPlaceholder('')
+      .setDesc('Overrides the text font defined in Obsidian Appearance settings when in edit mode (default "??").')
+      .addText(text => text.setPlaceholder("'??'")
         .setValue((this.plugin.settings.editorFont || '') + '')
         .onChange((value) => {
           this.plugin.settings.editorFont = value;
