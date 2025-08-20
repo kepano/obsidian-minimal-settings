@@ -155,6 +155,16 @@ export default class MinimalTheme extends Plugin {
     });
 
     this.addCommand({
+      id: 'toggle-dim-inactive-editor',
+      name: 'Toggle dim inactive editor',
+      callback: () => {
+        this.settings.dimInactiveEditor = !this.settings.dimInactiveEditor;
+        this.saveData(this.settings);
+        this.refresh();
+      }
+    });
+
+    this.addCommand({
       id: 'toggle-minimal-focus-mode',
       name: 'Toggle focus mode',
       callback: () => {
@@ -730,6 +740,7 @@ export default class MinimalTheme extends Plugin {
     document.body.classList.toggle('full-file-names', !this.settings.trimNames);
     document.body.classList.toggle('labeled-nav', this.settings.labeledNav);
     document.body.classList.toggle('minimal-folding', this.settings.folding);
+    document.body.classList.toggle('dim-inactive-editor', this.settings.dimInactiveEditor);
 
     document.body.addClass(
       this.settings.chartWidth,

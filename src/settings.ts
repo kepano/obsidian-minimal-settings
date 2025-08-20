@@ -34,6 +34,7 @@ export interface MinimalSettings {
   folding: boolean;
   lineNumbers: boolean;
   readableLineLength: boolean;
+  dimInactiveEditor: boolean;
 }
 
 export const DEFAULT_SETTINGS: MinimalSettings = {
@@ -69,6 +70,7 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   lineNumbers: false,
   readableLineLength: false,
   devBlockWidth: false,
+  dimInactiveEditor: false,
 }
 
 export class MinimalSettingsTab extends PluginSettingTab {
@@ -287,6 +289,16 @@ export class MinimalSettingsTab extends PluginSettingTab {
         .addToggle(toggle => toggle.setValue(this.plugin.settings.bordersToggle)
           .onChange((value) => {
             this.plugin.settings.bordersToggle = value;
+            this.plugin.saveData(this.plugin.settings);
+            this.plugin.refresh();
+          }));
+
+      new Setting(containerEl)
+        .setName('Dim inactive editor')
+        .setDesc('Dim inactive editor when split into multiple panes.')
+        .addToggle(toggle => toggle.setValue(this.plugin.settings.dimInactiveEditor)
+          .onChange((value) => {
+            this.plugin.settings.dimInactiveEditor = value;
             this.plugin.saveData(this.plugin.settings);
             this.plugin.refresh();
           }));
