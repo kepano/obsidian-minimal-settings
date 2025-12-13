@@ -1,4 +1,4 @@
-import { App, Plugin } from 'obsidian';
+import { Plugin } from 'obsidian';
 import { MinimalSettings, MinimalSettingsTab, DEFAULT_SETTINGS } from './settings';
 import { registerAllCommands } from './commands';
 import { 

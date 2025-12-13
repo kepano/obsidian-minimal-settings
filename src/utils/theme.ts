@@ -1,4 +1,4 @@
-import { App, Workspace } from 'obsidian';
+import { App } from 'obsidian';
 import { MinimalSettings } from '../settings';
 import { removeDarkScheme, removeLightScheme } from './styles';
 

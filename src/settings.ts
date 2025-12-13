@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting, SettingGroup } from 'obsidian';
+import { App, PluginSettingTab, SettingGroup } from 'obsidian';
 import MinimalTheme from "./main";
 
 export interface MinimalSettings {
