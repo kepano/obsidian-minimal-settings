@@ -58,15 +58,5 @@ export function registerToggleCommands(plugin: MinimalTheme) {
       plugin.updateTheme();
     }
   });
-
-  plugin.addCommand({
-    id: 'toggle-minimal-dev-block-width',
-    name: 'Dev — Show block widths',
-    callback: () => {
-      plugin.settings.devBlockWidth = !plugin.settings.devBlockWidth;
-      void plugin.saveData(plugin.settings);
-      plugin.refresh();
-    }
-  });
 }
 

@@ -35,11 +35,11 @@ export default class MinimalTheme extends Plugin {
   }
 
   onunload() {
-    const sidebarEl = activeDocument.getElementsByClassName('mod-left-split')[0];
+    const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
     if (sidebarEl) {
       sidebarEl.removeClass('theme-dark');
     }
-    const ribbonEl = activeDocument.getElementsByClassName('side-dock-ribbon')[0];
+    const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
     if (ribbonEl) {
       ribbonEl.removeClass('theme-dark');
     }
@@ -93,7 +93,7 @@ export default class MinimalTheme extends Plugin {
         this.settings.readableLineLength = false;
       }
 
-      const bodyClassList = activeDocument.body.classList;
+      const bodyClassList = document.body.classList;
       bodyClassList.toggle('minimal-folding', folding);
       bodyClassList.toggle('minimal-line-nums', lineNumbers);
       bodyClassList.toggle('minimal-readable', readableLineLength);

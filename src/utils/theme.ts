@@ -3,13 +3,13 @@ import { MinimalSettings } from '../settings';
 import { removeDarkScheme, removeLightScheme } from './styles';
 
 export function updateDarkStyle(app: App, settings: MinimalSettings) {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'theme-light',
     'minimal-dark',
     'minimal-dark-tonal',
     'minimal-dark-black'
   );
-  activeDocument.body.addClass(
+  document.body.addClass(
     'theme-dark',
     settings.darkStyle
   );
@@ -24,14 +24,14 @@ export function updateDarkStyle(app: App, settings: MinimalSettings) {
 }
 
 export function updateLightStyle(app: App, settings: MinimalSettings) {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'theme-dark',
     'minimal-light',
     'minimal-light-tonal',
     'minimal-light-contrast',
     'minimal-light-white'
   );
-  activeDocument.body.addClass(
+  document.body.addClass(
     'theme-light',
     settings.lightStyle
   );
@@ -47,31 +47,31 @@ export function updateLightStyle(app: App, settings: MinimalSettings) {
 
 export function updateDarkScheme(settings: MinimalSettings) {
   removeDarkScheme();
-  activeDocument.body.addClass(settings.darkScheme);
+  document.body.addClass(settings.darkScheme);
 }
 
 export function updateLightScheme(settings: MinimalSettings) {
   removeLightScheme();
-  activeDocument.body.addClass(settings.lightScheme);
+  document.body.addClass(settings.lightScheme);
 }
 
 export function updateTheme(app: App) {
   // @ts-ignore
   if (app.vault.getConfig('theme') === 'system') {
-    if (activeDocument.body.classList.contains('theme-light')) {
-      activeDocument.body.removeClass('theme-light');
-      activeDocument.body.addClass('theme-dark');
+    if (document.body.classList.contains('theme-light')) {
+      document.body.removeClass('theme-light');
+      document.body.addClass('theme-dark');
     } else {
-      activeDocument.body.removeClass('theme-dark');
-      activeDocument.body.addClass('theme-light');
+      document.body.removeClass('theme-dark');
+      document.body.addClass('theme-light');
     }
   } else {
-    if (activeDocument.body.classList.contains('theme-light')) {
-      activeDocument.body.removeClass('theme-light');
-      activeDocument.body.addClass('theme-dark');
+    if (document.body.classList.contains('theme-light')) {
+      document.body.removeClass('theme-light');
+      document.body.addClass('theme-dark');
     } else {
-      activeDocument.body.removeClass('theme-dark');
-      activeDocument.body.addClass('theme-light');
+      document.body.removeClass('theme-dark');
+      document.body.addClass('theme-light');
     }
 
     // @ts-ignore
@@ -87,9 +87,9 @@ export function updateTheme(app: App) {
 }
 
 export function updateSidebar(settings: MinimalSettings) {
-  const sidebarEl = activeDocument.getElementsByClassName('mod-left-split')[0];
-  const ribbonEl = activeDocument.getElementsByClassName('side-dock-ribbon')[0];
-  if (sidebarEl && ribbonEl && activeDocument.body.classList.contains('theme-light') && settings.lightStyle == 'minimal-light-contrast') {
+  const sidebarEl = document.getElementsByClassName('mod-left-split')[0];
+  const ribbonEl = document.getElementsByClassName('side-dock-ribbon')[0];
+  if (sidebarEl && ribbonEl && document.body.classList.contains('theme-light') && settings.lightStyle == 'minimal-light-contrast') {
     sidebarEl.addClass('theme-dark');
     ribbonEl.addClass('theme-dark');
   } else if (sidebarEl && ribbonEl) {

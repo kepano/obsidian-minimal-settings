@@ -19,7 +19,6 @@ export interface MinimalSettings {
   lineWidthWide: number;
   maxWidth: number;
   imgGrid: boolean;
-  devBlockWidth: boolean;
   tableWidth: string;
   iframeWidth: string;
   imgWidth: string;
@@ -68,7 +67,6 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   folding: true,
   lineNumbers: false,
   readableLineLength: false,
-  devBlockWidth: false,
 }
 
 export class MinimalSettingsTab extends PluginSettingTab {
@@ -95,7 +93,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
     colorSchemeDesc.appendText(' plugin. See ');
     colorSchemeDesc.appendChild(
       createEl('a', {
-        text: 'documentation',
+        text: 'Documentation',
         href: 'https://minimal.guide/features/color-schemes',
       })
     );
@@ -293,7 +291,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
     layoutDesc.appendText('These options can also be defined per file. See ');
     layoutDesc.appendChild(
       createEl('a', {
-        text: 'documentation',
+        text: 'Documentation',
         href: 'https://minimal.guide/features/block-width',
       })
     );
@@ -451,7 +449,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
           })))
       .addSetting(setting => setting
         .setName('Editor font')
-        .setDesc('Overrides the text font defined in Obsidian Appearance settings when in edit mode.')
+        .setDesc('Overrides the text font defined in Obsidian appearance settings when in edit mode.')
         .addText(text => text.setPlaceholder('')
           .setValue((this.plugin.settings.editorFont || '') + '')
           .onChange((value) => {

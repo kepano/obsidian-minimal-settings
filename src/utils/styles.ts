@@ -1,48 +1,52 @@
 import { App } from 'obsidian';
 import { MinimalSettings } from '../settings';
 
+const cssVarNames = [
+  '--font-ui-small',
+  '--line-height',
+  '--line-width',
+  '--line-width-wide',
+  '--max-width',
+  '--font-editor-override',
+];
+
 export function loadRules() {
-  const css = activeDocument.createElement('style');
-  css.id = 'minimal-theme';
-  activeDocument.getElementsByTagName("head")[0].appendChild(css);
-  activeDocument.body.classList.add('minimal-theme');
+  document.body.classList.add('minimal-theme');
 }
 
 export function unloadRules() {
-  const styleElement = activeDocument.getElementById('minimal-theme');
-  if (styleElement) {
-    styleElement.parentNode?.removeChild(styleElement);
+  for (const name of cssVarNames) {
+    document.body.style.removeProperty(name);
   }
-  activeDocument.body.classList.remove('minimal-theme');
+  document.body.classList.remove('minimal-theme');
 }
 
 export function updateStyle(settings: MinimalSettings) {
   removeStyle();
   removeSettings();
 
-  activeDocument.body.addClass(
+  document.body.addClass(
     settings.lightStyle,
     settings.lightScheme,
     settings.darkStyle,
     settings.darkScheme
   );
 
-  activeDocument.body.classList.toggle('borders-none', !settings.bordersToggle);
-  activeDocument.body.classList.toggle('colorful-headings', settings.colorfulHeadings);
-  activeDocument.body.classList.toggle('colorful-frame', settings.colorfulFrame);
-  activeDocument.body.classList.toggle('colorful-active', settings.colorfulActiveStates);
-  activeDocument.body.classList.toggle('minimal-focus-mode', settings.focusMode);
-  activeDocument.body.classList.toggle('links-int-on', settings.underlineInternal);
-  activeDocument.body.classList.toggle('links-ext-on', settings.underlineExternal);
-  activeDocument.body.classList.toggle('full-width-media', settings.fullWidthMedia);
-  activeDocument.body.classList.toggle('img-grid', settings.imgGrid);
-  activeDocument.body.classList.toggle('minimal-dev-block-width', settings.devBlockWidth);
-  activeDocument.body.classList.toggle('minimal-status-off', !settings.minimalStatus);
-  activeDocument.body.classList.toggle('full-file-names', !settings.trimNames);
-  activeDocument.body.classList.toggle('labeled-nav', settings.labeledNav);
-  activeDocument.body.classList.toggle('minimal-folding', settings.folding);
+  document.body.classList.toggle('borders-none', !settings.bordersToggle);
+  document.body.classList.toggle('colorful-headings', settings.colorfulHeadings);
+  document.body.classList.toggle('colorful-frame', settings.colorfulFrame);
+  document.body.classList.toggle('colorful-active', settings.colorfulActiveStates);
+  document.body.classList.toggle('minimal-focus-mode', settings.focusMode);
+  document.body.classList.toggle('links-int-on', settings.underlineInternal);
+  document.body.classList.toggle('links-ext-on', settings.underlineExternal);
+  document.body.classList.toggle('full-width-media', settings.fullWidthMedia);
+  document.body.classList.toggle('img-grid', settings.imgGrid);
+  document.body.classList.toggle('minimal-status-off', !settings.minimalStatus);
+  document.body.classList.toggle('full-file-names', !settings.trimNames);
+  document.body.classList.toggle('labeled-nav', settings.labeledNav);
+  document.body.classList.toggle('minimal-folding', settings.folding);
 
-  activeDocument.body.addClass(
+  document.body.addClass(
     settings.chartWidth,
     settings.tableWidth,
     settings.imgWidth,
@@ -50,22 +54,18 @@ export function updateStyle(settings: MinimalSettings) {
     settings.mapWidth
   );
 
-  const el = activeDocument.getElementById('minimal-theme');
-  if (!el) throw new Error('minimal-theme element not found!');
-  else {
-    el.innerText = 
-      'body.minimal-theme{'
-      + '--font-ui-small:' + settings.textSmall + 'px;'
-      + '--line-height:' + settings.lineHeight + ';'
-      + '--line-width:' + settings.lineWidth + 'rem;'
-      + '--line-width-wide:' + settings.lineWidthWide + 'rem;'
-      + '--max-width:' + settings.maxWidth + '%;'
-      + '--font-editor-override:' + settings.editorFont + ';';
-  }
+  document.body.setCssProps({
+    '--font-ui-small': `${settings.textSmall}px`,
+    '--line-height': `${settings.lineHeight}`,
+    '--line-width': `${settings.lineWidth}rem`,
+    '--line-width-wide': `${settings.lineWidthWide}rem`,
+    '--max-width': `${settings.maxWidth}%`,
+    '--font-editor-override': settings.editorFont,
+  });
 }
 
 export function removeSettings() {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'borders-none',
     'colorful-headings',
     'colorful-frame',
@@ -75,13 +75,12 @@ export function removeSettings() {
     'links-ext-on',
     'full-width-media',
     'img-grid',
-    'minimal-dev-block-width',
     'minimal-status-off',
     'full-file-names',
     'labeled-nav',
     'minimal-folding'
   );
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'table-wide',
     'table-max',
     'table-100',
@@ -106,7 +105,7 @@ export function removeSettings() {
 }
 
 export function removeStyle() {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'minimal-light',
     'minimal-light-tonal',
     'minimal-light-contrast',
@@ -118,7 +117,7 @@ export function removeStyle() {
 }
 
 export function removeDarkScheme() {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'minimal-atom-dark',
     'minimal-ayu-dark',
     'minimal-catppuccin-dark',
@@ -138,7 +137,7 @@ export function removeDarkScheme() {
 }
 
 export function removeLightScheme() {
-  activeDocument.body.removeClass(
+  document.body.removeClass(
     'minimal-atom-light',
     'minimal-ayu-light',
     'minimal-catppuccin-light',
