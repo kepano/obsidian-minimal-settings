@@ -6,7 +6,7 @@ export function registerFontCommands(plugin: MinimalTheme) {
     name: 'Increase body font size',
     callback: () => {
       plugin.settings.textNormal = plugin.settings.textNormal + 0.5;
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.setFontSize();
     }
   });
@@ -16,7 +16,7 @@ export function registerFontCommands(plugin: MinimalTheme) {
     name: 'Decrease body font size',
     callback: () => {
       plugin.settings.textNormal = plugin.settings.textNormal - 0.5;
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.setFontSize();
     }
   });

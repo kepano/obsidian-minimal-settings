@@ -6,7 +6,7 @@ export function registerDarkModeCommands(plugin: MinimalTheme) {
     name: 'Use dark mode (default)',
     callback: () => {
       plugin.settings.darkStyle = 'minimal-dark';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateDarkStyle();
     }
   });
@@ -16,7 +16,7 @@ export function registerDarkModeCommands(plugin: MinimalTheme) {
     name: 'Use dark mode (low contrast)',
     callback: () => {
       plugin.settings.darkStyle = 'minimal-dark-tonal';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateDarkStyle();
     }
   });
@@ -26,7 +26,7 @@ export function registerDarkModeCommands(plugin: MinimalTheme) {
     name: 'Use dark mode (true black)',
     callback: () => {
       plugin.settings.darkStyle = 'minimal-dark-black';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateDarkStyle();
     }
   });

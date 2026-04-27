@@ -7,7 +7,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between dark mode styles',
     callback: () => {
       plugin.settings.darkStyle = darkStyles[(darkStyles.indexOf(plugin.settings.darkStyle) + 1) % darkStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateDarkStyle();
     }
   });
@@ -17,7 +17,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between light mode styles',
     callback: () => {
       plugin.settings.lightStyle = lightStyles[(lightStyles.indexOf(plugin.settings.lightStyle) + 1) % lightStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateLightStyle();
     }
   });
@@ -27,7 +27,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between table width options',
     callback: () => {
       plugin.settings.tableWidth = tableWidthStyles[(tableWidthStyles.indexOf(plugin.settings.tableWidth) + 1) % tableWidthStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.refresh();
     }
   });
@@ -37,7 +37,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between image width options',
     callback: () => {
       plugin.settings.imgWidth = imgWidthStyles[(imgWidthStyles.indexOf(plugin.settings.imgWidth) + 1) % imgWidthStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.refresh();
     }
   });
@@ -47,7 +47,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between iframe width options',
     callback: () => {
       plugin.settings.iframeWidth = iframeWidthStyles[(iframeWidthStyles.indexOf(plugin.settings.iframeWidth) + 1) % iframeWidthStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.refresh();
     }
   });
@@ -57,7 +57,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between chart width options',
     callback: () => {
       plugin.settings.chartWidth = chartWidthStyles[(chartWidthStyles.indexOf(plugin.settings.chartWidth) + 1) % chartWidthStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.refresh();
     }
   });
@@ -67,7 +67,7 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between map width options',
     callback: () => {
       plugin.settings.mapWidth = mapWidthStyles[(mapWidthStyles.indexOf(plugin.settings.mapWidth) + 1) % mapWidthStyles.length];
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.refresh();
     }
   });

@@ -6,7 +6,7 @@ export function registerLightModeCommands(plugin: MinimalTheme) {
     name: 'Use light mode (default)',
     callback: () => {
       plugin.settings.lightStyle = 'minimal-light';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateLightStyle();
     }
   });
@@ -16,7 +16,7 @@ export function registerLightModeCommands(plugin: MinimalTheme) {
     name: 'Use light mode (all white)',
     callback: () => {
       plugin.settings.lightStyle = 'minimal-light-white';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateLightStyle();
     }
   });
@@ -26,7 +26,7 @@ export function registerLightModeCommands(plugin: MinimalTheme) {
     name: 'Use light mode (low contrast)',
     callback: () => {
       plugin.settings.lightStyle = 'minimal-light-tonal';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateLightStyle();
     }
   });
@@ -36,7 +36,7 @@ export function registerLightModeCommands(plugin: MinimalTheme) {
     name: 'Use light mode (high contrast)',
     callback: () => {
       plugin.settings.lightStyle = 'minimal-light-contrast';
-      plugin.saveData(plugin.settings);
+      void plugin.saveData(plugin.settings);
       plugin.updateLightStyle();
     }
   });
