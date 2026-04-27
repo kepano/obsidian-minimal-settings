@@ -84,7 +84,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     // Color scheme section
-    const colorSchemeDesc = activeDocument.createDocumentFragment();
+    const colorSchemeDesc = createFragment();
     colorSchemeDesc.appendText('For more options, use the ');
     colorSchemeDesc.appendChild(
       createEl('a', {
@@ -101,7 +101,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
     );
     colorSchemeDesc.appendText(' for details.');
 
-    const colorHeading = activeDocument.createDocumentFragment();
+    const colorHeading = createFragment();
     colorHeading.createDiv({cls: 'setting-item-name', text: 'Color scheme'});
     const colorDesc = colorHeading.createDiv({cls: 'setting-item-description'});
     colorDesc.appendChild(colorSchemeDesc);
@@ -289,7 +289,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
           })));
 
     // Layout section
-    const layoutDesc = activeDocument.createDocumentFragment();
+    const layoutDesc = createFragment();
     layoutDesc.appendText('These options can also be defined per file. See ');
     layoutDesc.appendChild(
       createEl('a', {
@@ -299,7 +299,7 @@ export class MinimalSettingsTab extends PluginSettingTab {
     );
     layoutDesc.appendText(' for details.');
 
-    const layoutHeading = activeDocument.createDocumentFragment();
+    const layoutHeading = createFragment();
     layoutHeading.createDiv({cls: 'setting-item-name', text: 'Layout'});
     const layoutDescDiv = layoutHeading.createDiv({cls: 'setting-item-description'});
     layoutDescDiv.appendChild(layoutDesc);
