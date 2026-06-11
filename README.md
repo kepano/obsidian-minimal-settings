@@ -2,12 +2,12 @@ Full documentation at [minimal.guide](https://minimal.guide/)
 
 ## Overview
 
-This plugin accompanies [Minimal Theme](https://github.com/kepano/obsidian-minimal), allowing you to customize the theme from the Obsidian Settings panel. This plugin is not required to use Minimal Theme, but highly recommended.
+This plugin accompanies [Minimal Theme](https://community.obsidian.md/themes/minimal), allowing you to customize the theme from the Obsidian Settings panel. This plugin is not required to use Minimal Theme, but highly recommended.
 
 ## Usage
 
 - Requires Minimal Theme
-- Works with [Hider Plugin](https://github.com/kepano/obsidian-hider) to simplify the Obsidian UI by removing the menu ribbon, tooltips, title bar, scrollbars, etc. This functionality was previously included in Minimal Theme but has now been separated out.
+- Works with [Hider](https://community.obsidian.md/plugins/obsidian-hider) plugin to simplify the Obsidian UI by removing the menu ribbon, tooltips, title bar, scrollbars, etc.
 
 ## Settings
 
