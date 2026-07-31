@@ -4,8 +4,7 @@
 	"version": "9.0.0",
 	"minAppVersion": "1.13.0",
 	"description": "Change the colors, fonts and features of Minimal Theme.",
-	"author": "@kepano",
-	"authorUrl": "https://www.twitter.com/kepano",
-	"fundingUrl": "https://www.buymeacoffee.com/kepano",
+	"author": "kepano",
+	"authorUrl": "https://stephango.com/",
 	"isDesktopOnly": false
 }
