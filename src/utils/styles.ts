@@ -7,7 +7,6 @@ const cssVarNames = [
   '--line-width',
   '--line-width-wide',
   '--max-width',
-  '--font-editor-override',
 ];
 
 export function loadRules() {
@@ -60,7 +59,6 @@ export function updateStyle(settings: MinimalSettings) {
     '--line-width': `${settings.lineWidth}rem`,
     '--line-width-wide': `${settings.lineWidthWide}rem`,
     '--max-width': `${settings.maxWidth}%`,
-    '--font-editor-override': settings.editorFont,
   });
 }
 

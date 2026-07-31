@@ -8,7 +8,6 @@ export interface MinimalSettings {
   darkStyle: string;
   lightScheme: string;
   darkScheme: string;
-  editorFont: string;
   colorfulHeadings: boolean;
   colorfulFrame: boolean;
   colorfulActiveStates: boolean,
@@ -42,7 +41,6 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   darkStyle: 'minimal-dark',
   lightScheme: 'minimal-default-light',
   darkScheme: 'minimal-default-dark',
-  editorFont: '',
   lineHeight: 1.5,
   lineWidth: 40,
   lineWidthWide: 50,
@@ -401,11 +399,6 @@ export class MinimalSettingsTab extends PluginSettingTab {
             () => this.plugin.refresh(),
             value => `${value}%`,
           ),
-          {
-            name: 'Editor font',
-            desc: 'Overrides the text font defined in Obsidian appearance settings when in edit mode.',
-            control: { type: 'text', key: 'editorFont', placeholder: '' },
-          },
         ],
       },
     ];
