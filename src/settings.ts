@@ -1,7 +1,7 @@
-import { App, PluginSettingTab, Setting, SettingDefinition, SettingDefinitionItem, SliderComponent } from 'obsidian';
+import { App, Platform, PluginSettingTab, Setting, SettingDefinition, SettingDefinitionItem, SliderComponent } from 'obsidian';
 import MinimalTheme from "./main";
 
-type NumericSettingKey = 'textSmall' | 'lineHeight' | 'lineWidth' | 'lineWidthWide' | 'maxWidth';
+type NumericSettingKey = 'textSmallScale' | 'lineHeight' | 'lineWidth' | 'lineWidthWide' | 'maxWidth';
 
 export interface MinimalSettings {
   lightStyle: string;
@@ -28,7 +28,7 @@ export interface MinimalSettings {
   fullWidthMedia: boolean,
   minimalStatus: boolean,
   textNormal: number;
-  textSmall: number;
+  textSmallScale: number;
   underlineInternal: boolean;
   underlineExternal: boolean;
   folding: boolean;
@@ -46,7 +46,7 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   lineWidthWide: 50,
   maxWidth: 88,
   textNormal: 16,
-  textSmall: 13,
+  textSmallScale: 0.8125,
   imgGrid: false,
   imgWidth: 'img-default-width',
   tableWidth: 'table-default-width',
@@ -362,13 +362,17 @@ export class MinimalSettingsTab extends PluginSettingTab {
         type: 'group',
         heading: 'Typography',
         items: [
-          this.sliderSetting(
-            'Small font size',
-            'Text in sidebars and tabs.',
-            'textSmall',
-            { min: 9, max: 20, step: 1 },
-            () => this.plugin.refresh(),
-          ),
+          {
+            ...this.sliderSetting(
+              'Small font scale',
+              'Scaling factor for smaller font sizes.',
+              'textSmallScale',
+              { min: 0.7, max: 1, step: 0.01 },
+              () => this.plugin.refresh(),
+              value => `${Math.round(value * 100)}%`,
+            ),
+            visible: () => !Platform.isMobile,
+          },
           this.sliderSetting(
             'Line height',
             'Line height of text.',

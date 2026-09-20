@@ -2,7 +2,7 @@ import { App } from 'obsidian';
 import { MinimalSettings } from '../settings';
 
 const cssVarNames = [
-  '--font-ui-small',
+  '--minimal-small-scale',
   '--line-height',
   '--line-width',
   '--line-width-wide',
@@ -54,7 +54,7 @@ export function updateStyle(settings: MinimalSettings) {
   );
 
   document.body.setCssProps({
-    '--font-ui-small': `${settings.textSmall}px`,
+    '--minimal-small-scale': `${settings.textSmallScale}`,
     '--line-height': `${settings.lineHeight}`,
     '--line-width': `${settings.lineWidth}rem`,
     '--line-width-wide': `${settings.lineWidthWide}rem`,
