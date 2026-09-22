@@ -1,5 +1,5 @@
 import MinimalTheme from '../main';
-import { lightStyles, darkStyles, tableWidthStyles, imgWidthStyles, iframeWidthStyles, chartWidthStyles, mapWidthStyles } from '../utils/constants';
+import { lightStyles, darkStyles, tableWidthStyles, codeWidthStyles, imgWidthStyles, iframeWidthStyles, chartWidthStyles, mapWidthStyles } from '../utils/constants';
 
 export function registerCycleCommands(plugin: MinimalTheme) {
   plugin.addCommand({
@@ -27,6 +27,16 @@ export function registerCycleCommands(plugin: MinimalTheme) {
     name: 'Cycle between table width options',
     callback: () => {
       plugin.settings.tableWidth = tableWidthStyles[(tableWidthStyles.indexOf(plugin.settings.tableWidth) + 1) % tableWidthStyles.length];
+      void plugin.saveData(plugin.settings);
+      plugin.refresh();
+    }
+  });
+
+  plugin.addCommand({
+    id: 'cycle-minimal-code-width',
+    name: 'Cycle between code block width options',
+    callback: () => {
+      plugin.settings.codeWidth = codeWidthStyles[(codeWidthStyles.indexOf(plugin.settings.codeWidth) + 1) % codeWidthStyles.length];
       void plugin.saveData(plugin.settings);
       plugin.refresh();
     }

@@ -21,6 +21,7 @@ export interface MinimalSettings {
   maxWidth: number;
   imgGrid: boolean;
   tableWidth: string;
+  codeWidth: string;
   iframeWidth: string;
   imgWidth: string;
   chartWidth: string;
@@ -50,6 +51,7 @@ export const DEFAULT_SETTINGS: MinimalSettings = {
   imgGrid: false,
   imgWidth: 'img-default-width',
   tableWidth: 'table-default-width',
+  codeWidth: 'code-default-width',
   iframeWidth: 'iframe-default-width',
   mapWidth: 'map-default-width',
   chartWidth: 'chart-default-width',
@@ -297,6 +299,20 @@ export class MinimalSettingsTab extends PluginSettingTab {
                 'table-wide': 'Wide line width',
                 'table-max': 'Maximum line width',
                 'table-100': '100% pane width',
+              },
+            },
+          },
+          {
+            name: 'Code block width',
+            desc: 'Default width for code blocks.',
+            control: {
+              type: 'dropdown',
+              key: 'codeWidth',
+              options: {
+                'code-default-width': 'Default',
+                'code-wide': 'Wide line width',
+                'code-max': 'Maximum line width',
+                'code-100': '100% pane width',
               },
             },
           },
