@@ -47,7 +47,7 @@ Several alternate light/dark mode background are availably. These options can be
 - Focus mode
 - Custom icons
 - Image grids
-- Width settings for tables, images and iframes
+- Width settings for tables, code blocks, images, charts, maps, and iframes
 
 
 ## Hotkeys
@@ -61,7 +61,10 @@ Hotkeys can be customized to perform the following actions:
 - Increase/decrease font size
 - Toggle image grids
 - Toggle sidebar borders
-- Cycle image width options
 - Cycle table width options
+- Cycle code block width options
+- Cycle image width options
+- Cycle chart width options
+- Cycle map width options
 - Cycle iframe width options
 

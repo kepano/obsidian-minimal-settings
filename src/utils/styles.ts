@@ -48,6 +48,7 @@ export function updateStyle(settings: MinimalSettings) {
   document.body.addClass(
     settings.chartWidth,
     settings.tableWidth,
+    settings.codeWidth,
     settings.imgWidth,
     settings.iframeWidth,
     settings.mapWidth
@@ -83,6 +84,10 @@ export function removeSettings() {
     'table-max',
     'table-100',
     'table-default-width',
+    'code-wide',
+    'code-max',
+    'code-100',
+    'code-default-width',
     'iframe-wide',
     'iframe-max',
     'iframe-100',
